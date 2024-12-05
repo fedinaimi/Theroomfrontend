@@ -24,13 +24,17 @@ const ScrollToHash = () => {
         const element = document.querySelector(hash);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          // Fallback if element is not found
+          console.error(`Element with id ${hash} not found.`);
         }
-      }, 300); // Delay ensures DOM is rendered
+      }, 300);
     }
   }, [location]);
 
   return null;
 };
+
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);

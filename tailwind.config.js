@@ -5,16 +5,12 @@ module.exports = {
   ],
   theme: {
     extend: {
-
       backgroundImage: {
-        'custom-bg': "url('/src/assets/background.png')",
+        'custom-bg': "url('/assets/background.png')", // Reference from the public folder
       },
     },
   },
   plugins: [
     require('@tailwindcss/typography'),
   ],
-  
 };
-
-
