@@ -9,6 +9,7 @@ function Scenarios() {
   const [scenarios, setScenarios] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 992);
@@ -16,20 +17,23 @@ function Scenarios() {
 
     async function fetchScenarios() {
       try {
-        console.log("Fetching scenarios...");
         const fetchedScenarios = await getAllChapters();
-        console.log("Fetched scenarios:", fetchedScenarios);
         setScenarios(fetchedScenarios);
       } catch (error) {
         console.error("Error fetching scenarios:", error);
         setErrorMessage("An error occurred while fetching scenarios. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
     }
 
     fetchScenarios();
-
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (isLoading) {
+    return <div className="loading">Loading scenarios...</div>;
+  }
 
   if (errorMessage) {
     return (
@@ -51,6 +55,7 @@ function Scenarios() {
               loop
               muted
               playsInline
+              poster={scenario.image} // Placeholder while video loads
               src={scenario.video}
             >
               Your browser does not support the video tag.
