@@ -20,10 +20,12 @@ const ScrollToHash = () => {
   useEffect(() => {
     const hash = location.hash;
     if (hash) {
-      const element = document.querySelector(hash);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }, 300); // Delay ensures DOM is rendered
     }
   }, [location]);
 
@@ -33,10 +35,18 @@ const ScrollToHash = () => {
 function App() {
   const [showSplash, setShowSplash] = useState(true);
 
-  // Hide splash screen after video ends
+  // Hide splash screen after video ends or timeout
   const handleSplashFinish = () => {
     setShowSplash(false);
   };
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShowSplash(false);
+    }, 5000); // Fallback timeout in case video fails
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   return (
     <Router>
@@ -75,7 +85,7 @@ function App() {
             />
             <Route path="/scenarios/:id" element={<ScenarioDetails />} />
             <Route path="/reservation-details/:id" element={<ReservationDetails />} />
-            </Routes>
+          </Routes>
         </>
       )}
     </Router>

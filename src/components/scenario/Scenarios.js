@@ -49,17 +49,18 @@ function Scenarios() {
       <div className="mobile-scenarios">
         {scenarios.map((scenario) => (
           <div key={scenario._id} className="mobile-video-section">
-            <video
-              className="mobile-video"
-              autoPlay
-              loop
-              muted
-              playsInline
-              poster={scenario.image} // Placeholder while video loads
-              src={scenario.video}
-            >
-              Your browser does not support the video tag.
-            </video>
+           <video
+  className="mobile-video"
+  autoPlay
+  loop
+  muted
+  playsInline
+  poster={scenario.image} // Fallback image
+  src={scenario.video}
+>
+  Your browser does not support the video tag.
+</video>
+
             <div className="mobile-video-overlay">
               <h2>{scenario.name}</h2>
               <p>{scenario.description}</p>
