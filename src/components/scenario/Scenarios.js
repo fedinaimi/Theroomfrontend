@@ -8,6 +8,8 @@ function Scenarios() {
   const navigate = useNavigate();
   const [scenarios, setScenarios] = useState([]); // Dynamic scenarios from backend
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 992);
@@ -20,12 +22,31 @@ function Scenarios() {
         setScenarios(fetchedScenarios); // Update state with backend data
       } catch (error) {
         console.error("Error fetching scenarios:", error);
+        setError("An error occurred while fetching scenarios. Please try again.");
+      } finally {
+        setIsLoading(false); // Stop loading spinner
       }
     }
     fetchScenarios();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="loading-spinner">
+        <p>Loading scenarios...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="error-message">
+        <p>{error}</p>
+      </div>
+    );
+  }
 
   if (isMobile) {
     return (
@@ -39,6 +60,7 @@ function Scenarios() {
               muted
               playsInline
               src={scenario.video}
+              controls={false} // Ensure playback controls are hidden
             >
               Your browser does not support the video tag.
             </video>
