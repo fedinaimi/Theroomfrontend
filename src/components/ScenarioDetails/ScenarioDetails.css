@@ -1,0 +1,192 @@
+.cannibal-container_big {
+  font-family: "Bunya Personal", sans-serif;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #000;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  padding: 5vw;
+}
+
+/* Title */
+.cannibal-title {
+  font-size: 3rem;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Escape Room Section */
+.escape-room {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3vw;
+  max-width: 90%;
+  flex-wrap: wrap;
+}
+
+/* Image Styling */
+.img {
+  box-shadow: 0 0 12px rgba(242, 100, 34, 0.7), 0 0 24px rgba(242, 60, 0, 0.5);
+  border-radius: 30px;
+  height: auto;
+  max-width: 45%;
+  border: 1px solid #f26422;
+  object-fit: cover;
+}
+
+/* Details Section */
+.details {
+  text-align: left;
+  max-width: 50%;
+  flex: 1;
+}
+
+.details h2 {
+  font-size: 2rem;
+  color: #f26422;
+  margin-bottom: 20px;
+}
+
+/* Info List */
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.info-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  border: 1px solid #f26422;
+  background-color: #252525;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 45px;
+}
+
+.starOrange {
+  color: #f26422;
+}
+
+.starBlack {
+  color: #555;
+}
+
+/* Button Styling */
+.reserve-button {
+  font-family: "Bunya Personal", sans-serif;
+  box-shadow: 0 0 12px rgba(242, 100, 34, 0.7), 0 0 24px rgba(242, 60, 0, 0.5);
+  background-color: #f26422;
+  color: white;
+  padding: 15px 40px;
+  border: none;
+  cursor: pointer;
+  border-radius: 45px;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.reserve-button:hover {
+  background-color: #000;
+  color: #f26422;
+  transform: scale(1.05);
+}
+
+/* Description Section */
+.cannibal-description {
+  margin-top: 40px;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .cannibal-title {
+    font-size: 2.5rem;
+  }
+
+  .escape-room {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .img {
+    max-width: 80%;
+  }
+
+  .details {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .details h2 {
+    font-size: 1.8rem;
+  }
+
+  .info-list {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .info-list li {
+    font-size: 1rem;
+    padding: 8px 15px;
+  }
+
+  .reserve-button {
+    font-size: 1rem;
+    padding: 12px 30px;
+  }
+
+  .cannibal-description {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cannibal-title {
+    font-size: 2rem;
+  }
+
+  .img {
+    max-width: 90%;
+  }
+
+  .details h2 {
+    font-size: 1.5rem;
+  }
+
+  .info-list li {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+
+  .reserve-button {
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+
+  .cannibal-description {
+    font-size: 0.9rem;
+  }
+}

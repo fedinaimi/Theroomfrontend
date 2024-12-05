@@ -1,0 +1,236 @@
+/* General Reservation Container Styling */
+.reservation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center vertically */
+  padding-top: 7rem;
+  font-family: 'Bunya Personal', sans-serif;
+  background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.95),
+      rgba(0, 0, 0, 0.8)
+    ),
+    url("../../assets/background.png");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 100vh;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+/* Headings Styles */
+.reservation-container h1 {
+  box-shadow: 0 0 1px rgba(242, 100, 34, 0.7), 0 0 24px rgba(242, 60, 0, 0.5);
+  padding: 0.5em;
+  border-radius: 35px;
+  border-right: #f26422 2px solid;
+  border-top: #f26422 2px solid;
+  text-shadow: 1px 1px 5px white, 0 0 1em #f26422, 0 0 0.2em rgb(1, 1, 1);
+  font-size: 4rem;
+  margin-bottom: 2rem;
+  text-align: center; /* Center heading */
+}
+
+/* Navigation */
+.calendar-navigation {
+  display: flex;
+  justify-content: center; /* Center navigation buttons horizontally */
+  align-items: center; /* Center vertically */
+  font-size: 1.5rem;
+  background-color: rgba(37, 37, 37, 0.8);
+  border: #f26422 1px solid;
+  border-radius: 45px;
+  padding: 15px 20px;
+  width: 60%;
+  max-width: 500px;
+  margin: 1rem auto;
+}
+
+.nav-button {
+  border: #f26422 1px solid;
+  background-color: #f26422;
+  color: white;
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.nav-button:hover {
+  background-color: black;
+  color: #f26422;
+  transform: scale(1.05);
+}
+
+.active-date {
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* Cards Container */
+.card_rs-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center; /* Center cards horizontally */
+  align-items: flex-start; /* Align cards vertically */
+  width: 100%;
+  padding: 2rem;
+}
+
+/* Card */
+.card_r {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content inside the card */
+  justify-content: center; /* Center content vertically */
+  background-color: #222;
+  color: white;
+  border: 1px solid #f26422;
+  border-radius: 10px;
+  padding: 1.5rem;
+  width: 250px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.card_r:hover {
+  transform: scale(1.05);
+}
+
+.room-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+}
+
+/* Time Slots */
+.times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center; /* Center time slots horizontally */
+  margin-top: 1rem;
+  width: 100%; /* Ensure the time slots take up the full width of the card */
+}
+
+.time-slot {
+  padding: 10px;
+  flex: 0 1 48%; /* Ensure two slots appear side by side */
+  background-color: #222;
+  color: white;
+  text-align: center;
+  border-radius: 25px;
+  border: 1px solid #f26422;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.time-slot:hover {
+  background-color: #f26422;
+  transform: scale(1.05);
+}
+
+.time-slot.unavailable {
+  background-color: gray;
+  cursor: not-allowed;
+  color: white;
+}
+
+/* Coming Soon Styling */
+.coming-soon {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #f26422;
+  text-align: center;
+  animation: fadeInOut 2s infinite;
+}
+
+/* Popup Styling */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center; /* Center popup vertically */
+  justify-content: center; /* Center popup horizontally */
+  z-index: 1000;
+}
+
+.popup {
+  background-color: #222;
+  color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.popup-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  color: #f26422;
+}
+
+/* Success message */
+.success-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #222;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeInOut 3s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeInOut {
+  0%, 85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .reservation-container h1 {
+    font-size: 2.5rem;
+  }
+
+  .calendar-navigation {
+    width: 90%;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+  }
+
+  .card_r {
+    width: 90%;
+  }
+
+  .time-slot {
+    flex: 0 1 100%; /* Full width for time slots on smaller screens */
+  }
+}

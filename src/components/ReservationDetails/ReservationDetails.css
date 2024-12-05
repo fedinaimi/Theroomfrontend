@@ -1,0 +1,261 @@
+/* General Reservation Container Styling */
+.reservation-container {
+    padding-top: 8rem;
+    font-family: "Bunya Personal", sans-serif;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.95),
+        rgba(0, 0, 0, 0.8)
+      ),
+      url("../../assets/background.png");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    color: white;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  /* Title */
+  .reservation-title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(242, 100, 34, 0.8);
+  }
+  
+  /* Calendar Navigation */
+  .calendar-navigation {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    background-color: rgba(37, 37, 37, 0.8);
+    border: #f26422 1px solid;
+    border-radius: 30px;
+    padding: 10px 20px;
+    width: 60%;
+    max-width: 600px;
+    align-items: center;
+    margin: 1rem auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .nav-button {
+    border: #f26422 1px solid;
+    background-color: #f26422;
+    color: white;
+    border-radius: 20px;
+    padding: 0.4rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .nav-button:hover {
+    background-color: black;
+    color: #f26422;
+    transform: scale(1.05);
+  }
+  
+  .active-date {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 5px rgba(242, 100, 34, 0.7);
+  }
+  
+  /* Reservation Card */
+  .reservation-card {
+    background-color: #222;
+    color: white;
+    border: 1px solid #f26422;
+    border-radius: 15px;
+    padding: 1.5rem;
+    width: 70%;
+    max-width: 500px;
+    text-align: center;
+    margin: 1.5rem auto;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  .reservation-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Availability List */
+  .availability-title {
+    font-size: 1.8rem;
+    margin-top: 1rem;
+    margin-bottom: 0.8rem;
+    color: white;
+    text-shadow: 0 0 8px rgba(242, 100, 34, 0.7);
+  }
+  
+  .availability-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    justify-items: center;
+  }
+  
+  .time-slot {
+    width: 100%;
+    max-width: 140px;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: #222;
+    text-align: center;
+    border-radius: 25px;
+    border: 1px solid #f26422;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .time-slot:hover {
+    background-color: #f26422;
+    color: white;
+    transform: scale(1.05);
+  }
+  
+  /* Popup */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .popup {
+    background-color: #222;
+    border-radius: 15px;
+    padding: 2rem;
+    width: 90%;
+    max-width: 400px;
+    color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s ease-in-out;
+  }
+  
+  .popup-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #f26422;
+    text-align: center;
+  }
+  
+  .popup-form label {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .popup-form input,
+  .popup-form select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    border: 1px solid #f26422;
+    border-radius: 8px;
+    background-color: #333;
+    color: white;
+  }
+  
+  .popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .submit-button,
+  .cancel-button {
+    flex: 1;
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+    background-color: #f26422;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .cancel-button:hover {
+    background-color: #444;
+  }
+  
+  .submit-button:hover {
+    background-color: #f08022;
+  }
+  
+  /* Success Message */
+  .success-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #222;
+    color: #f26422;
+    padding: 1.5rem 3rem;
+    border-radius: 15px;
+    font-size: 1.5rem;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .calendar-navigation {
+      width: 80%;
+    }
+  
+    .reservation-card {
+      width: 90%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .calendar-navigation {
+      width: 90%;
+    }
+  
+    .time-slot {
+      max-width: 100px;
+    }
+  
+    .popup {
+      width: 95%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .reservation-title {
+      font-size: 2.5rem;
+    }
+  
+    .time-slot {
+      max-width: 120px;
+    }
+  
+    .popup-title {
+      font-size: 1.3rem;
+    }
+  }
+  

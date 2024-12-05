@@ -1,0 +1,255 @@
+/* Scenarios Section */
+.scenarios-section {
+  position: relative;
+  min-height: 100vh;
+  padding: 60px 20px;
+  color: white;
+  text-align: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../../assets/background.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Section Title */
+.scenarios-section h2 {
+  font-size: 3rem;
+  color: #f26422;
+  margin-bottom: 40px;
+  text-shadow: 0 0 10px rgba(242, 100, 34, 0.7);
+  animation: fadeInDown 1s ease;
+}
+
+/* Scenarios Container */
+.scenarios-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Three cards per row */
+  gap: 30px; /* Space between cards */
+  justify-content: center;
+  padding: 0 10px;
+}
+
+/* Scenario Card */
+.scenario-card {
+  background: rgba(17, 17, 17, 0.85);
+  border-radius: 15px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  transform: translateY(50px);
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+  animation-delay: var(--animation-delay);
+  height: 450px; /* Consistent height for all cards */
+}
+
+/* Hover Effects */
+.scenario-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(255, 165, 0, 0.5);
+}
+
+/* Image Wrapper */
+.scenario-image-wrapper {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.scenario-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.scenario-card:hover .scenario-image-wrapper img {
+  transform: scale(1.1);
+}
+
+/* Scenario Info */
+.scenario-info {
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px 0;
+}
+
+.scenario-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #f26422;
+  text-shadow: 0 0 5px rgba(255, 165, 0, 0.7);
+}
+
+.scenario-description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 15px;
+  height: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Button Styling */
+.custom-button {
+  align-self: center;
+  background-color: #f26422;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #d1551e;
+  transform: scale(1.1);
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .scenarios-container {
+    grid-template-columns: repeat(2, 1fr); /* Two cards per row on medium screens */
+  }
+  .scenario-card {
+    background: rgba(17, 17, 17, 0.85);
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+    animation-delay: var(--animation-delay); /* Custom delay for each card */
+    height: 450px;
+  }
+  
+  /* In-View Class */
+  .scenario-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .scenarios-section h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .scenarios-container {
+    grid-template-columns: 1fr; /* One card per row on smaller screens */
+  }
+
+  .scenario-card {
+    height: auto; /* Adjust card height for smaller screens */
+  }
+}
+/* Mobile Scenarios Container */
+.mobile-scenarios {
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+  }
+  
+  /* Fullscreen Video Section */
+  .mobile-video-section {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    scroll-snap-align: start;
+    overflow: hidden;
+  }
+  
+  /* Video Styling */
+  .mobile-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Video Overlay */
+  .mobile-video-overlay {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    text-align: left;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  }
+  
+  .mobile-video-overlay h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .mobile-video-overlay p {
+    font-size: 1rem;
+    margin: 10px 0;
+  }
+  
+  .cta-button {
+    background-color: #f26422;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .cta-button:hover {
+    background-color: #e2501f;
+  }
+  
+  /* Hide Scrollbar */
+  .mobile-scenarios::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .mobile-scenarios {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  

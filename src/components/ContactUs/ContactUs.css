@@ -1,0 +1,113 @@
+/* Contact Section */
+.contact-section {
+  position: relative;
+  padding: 60px 20px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 1));
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+}
+
+/* Contact Header */
+.contact-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  animation: fadeIn 1.5s ease;
+}
+
+.contact-header h2 {
+  font-size: 3rem;
+  color: #f26422;
+  text-shadow: 0 0 10px rgba(242, 100, 34, 0.8);
+}
+
+.phone-icon {
+  font-size: 3.5rem;
+  color: #f26422;
+  animation: bounce 2s infinite;
+}
+
+/* Description */
+.contact-content p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 800px;
+  margin: 0 auto 40px;
+  animation: fadeInUp 1.8s ease;
+}
+
+/* Contact Links */
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  animation: fadeInUp 2s ease;
+}
+
+.link-item {
+  font-size: 2.5rem; /* Adjust icon size */
+  color: white;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.link-item:hover {
+  color: #f26422; /* Highlight color */
+  transform: scale(1.2); /* Enlarge icon on hover */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .contact-header h2 {
+    font-size: 2.2rem;
+  }
+
+  .phone-icon {
+    font-size: 3rem;
+  }
+
+  .contact-content p {
+    font-size: 1rem;
+    max-width: 90%;
+  }
+
+  .link-item {
+    font-size: 2rem;
+  }
+}

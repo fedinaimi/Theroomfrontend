@@ -1,0 +1,11 @@
+[
+    { "name": "Tunisia", "dialCode": "+216", "code": "TN", "flag": "🇹🇳" },
+    { "name": "France", "dialCode": "+33", "code": "FR", "flag": "🇫🇷" },
+    { "name": "United States", "dialCode": "+1", "code": "US", "flag": "🇺🇸" },
+    { "name": "Germany", "dialCode": "+49", "code": "DE", "flag": "🇩🇪" },
+    { "name": "United Kingdom", "dialCode": "+44", "code": "GB", "flag": "🇬🇧" },
+    { "name": "Canada", "dialCode": "+1", "code": "CA", "flag": "🇨🇦" },
+    { "name": "Italy", "dialCode": "+39", "code": "IT", "flag": "🇮🇹" },
+    { "name": "Morocco", "dialCode": "+212", "code": "MA", "flag": "🇲🇦" }
+  ]
+  
