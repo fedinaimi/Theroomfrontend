@@ -6,44 +6,36 @@ import { getAllChapters } from "../../services/chapterService";
 
 function Scenarios() {
   const navigate = useNavigate();
-  const [scenarios, setScenarios] = useState([]); // Dynamic scenarios from backend
+  const [scenarios, setScenarios] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
-  const [isLoading, setIsLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 992);
     window.addEventListener("resize", handleResize);
 
-    // Fetch scenarios from backend on component mount
     async function fetchScenarios() {
       try {
+        console.log("Fetching scenarios...");
         const fetchedScenarios = await getAllChapters();
-        setScenarios(fetchedScenarios); // Update state with backend data
+        console.log("Fetched scenarios:", fetchedScenarios);
+        setScenarios(fetchedScenarios);
       } catch (error) {
         console.error("Error fetching scenarios:", error);
-        setError("An error occurred while fetching scenarios. Please try again.");
-      } finally {
-        setIsLoading(false); // Stop loading spinner
+        setErrorMessage("An error occurred while fetching scenarios. Please try again later.");
       }
     }
+
     fetchScenarios();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (isLoading) {
+  if (errorMessage) {
     return (
-      <div className="loading-spinner">
-        <p>Loading scenarios...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="error-message">
-        <p>{error}</p>
+      <div className="error-container">
+        <h1>Error</h1>
+        <p>{errorMessage}</p>
       </div>
     );
   }
@@ -60,7 +52,6 @@ function Scenarios() {
               muted
               playsInline
               src={scenario.video}
-              controls={false} // Ensure playback controls are hidden
             >
               Your browser does not support the video tag.
             </video>
