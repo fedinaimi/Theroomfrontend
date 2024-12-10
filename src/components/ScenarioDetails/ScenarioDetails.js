@@ -4,6 +4,7 @@ import "./ScenarioDetails.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faClock, faUsers, faBook } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+import { getChapterById } from "../../services/chapterService";
 
 function ScenarioDetails() {
   const { id } = useParams(); // Get chapter ID from URL
@@ -16,8 +17,8 @@ function ScenarioDetails() {
   useEffect(() => {
     async function fetchChapter() {
       try {
-        const response = await axios.get(`http://localhost:5000/api/chapters/${id}`);
-        setChapter(response.data); // Set chapter details
+        const fetchedChapter = await getChapterById(id); // Use the service
+        setChapter(fetchedChapter); // Set chapter details
       } catch (err) {
         console.error("Error fetching chapter:", err);
         setError("Failed to load chapter details.");
@@ -61,7 +62,7 @@ function ScenarioDetails() {
           <ul className="info-list">
             <li>
               <FontAwesomeIcon icon={faUsers} className="logo" />
-              <strong>Players:</strong> {chapter.playerNumber || "Not specified"}
+              <strong>Players:</strong>min 3 max {chapter.playerNumber || "Not specified"}
             </li>
             <li style={{ color: difficultyColor }}>
               ⭐ <strong>Difficulty:</strong> {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}

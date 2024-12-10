@@ -21,12 +21,12 @@ const Reservation = () => {
     name: "",
     email: "",
     phone: "",
-    countryCode: "+216", // Default country code
+    countryCode: "+216",
     people: 1,
-    language: "en", // Default language
+    language: "en",
   });
 
-  // Load all chapters on mount
+  // Fetch chapters on mount
   useEffect(() => {
     const loadChapters = async () => {
       try {
@@ -39,51 +39,54 @@ const Reservation = () => {
     loadChapters();
   }, []);
 
-  // Load time slots whenever the date or chapters change
-  useEffect(() => {
-    const loadTimeSlots = async () => {
-      if (chapters.length === 0) return;
+  // Fetch time slots based on the current date and chapters
+  const loadTimeSlotsForDate = async (date) => {
+    if (chapters.length === 0) return;
 
-      const date = currentDate.toISOString().split("T")[0];
-      const slots = {};
+    const formattedDate = date.toISOString().split("T")[0];
+    const slots = {};
 
-      for (const chapter of chapters) {
-        try {
-          const chapterTimeSlots = await fetchTimeSlots(chapter._id, date);
-          slots[chapter._id] = chapterTimeSlots;
-        } catch (error) {
-          console.error(
-            `No time slots found for chapter: ${chapter._id} on date: ${date}`,
-            error
-          );
-          slots[chapter._id] = [];
-        }
+    for (const chapter of chapters) {
+      try {
+        const chapterTimeSlots = await fetchTimeSlots(chapter._id, formattedDate);
+
+        const now = new Date();
+        const filteredSlots = chapterTimeSlots.filter((slot) => {
+          const slotTime = new Date(slot.startTime);
+          return date.toDateString() !== now.toDateString() || slotTime >= now;
+        });
+
+        slots[chapter._id] = filteredSlots;
+      } catch (error) {
+        console.error(`Error fetching slots for chapter ${chapter._id}:`, error);
+        slots[chapter._id] = [];
       }
+    }
+    setTimeSlots(slots);
+  };
 
-      setTimeSlots(slots);
-    };
-    loadTimeSlots();
+  useEffect(() => {
+    loadTimeSlotsForDate(currentDate);
   }, [chapters, currentDate]);
 
+  // Navigate to next or previous day
   const handleDateChange = (direction) => {
     const newDate = new Date(currentDate);
     newDate.setDate(currentDate.getDate() + (direction === "next" ? 1 : -1));
-    setCurrentDate(newDate);
+
+    const today = new Date();
+    if (newDate >= today.setHours(0, 0, 0, 0)) {
+      setCurrentDate(newDate);
+    }
   };
 
-  const formatDate = (date) =>
-    date.toLocaleDateString("fr-FR", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-
-  const formatTime = (time) =>
-    new Date(time).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+  // Select a specific date
+  const handleDateSelect = (e) => {
+    const selectedDate = new Date(e.target.value);
+    if (selectedDate >= new Date().setHours(0, 0, 0, 0)) {
+      setCurrentDate(selectedDate);
+    }
+  };
 
   const handleOpenPopup = (chapter, timeSlot) => {
     setSelectedChapter(chapter);
@@ -104,37 +107,30 @@ const Reservation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-  
+
     try {
       const reservationData = {
-        scenario: selectedChapter?.scenario._id, // Use "scenario" instead of "scenarioId"
-        chapter: selectedChapter._id, // Use "chapter" instead of "chapterId"
-        timeSlot: selectedTimeSlot._id, // Use "timeSlot" instead of "timeSlotId"
+        scenario: selectedChapter?.scenario?._id,
+        chapter: selectedChapter._id,
+        timeSlot: selectedTimeSlot._id,
         name: formData.name,
         email: formData.email,
-        phone: `${formData.countryCode}${formData.phone}`, // Combine country code with phone
+        phone: `${formData.countryCode}${formData.phone}`,
         people: formData.people,
-        language: formData.language, // Include the language
+        language: formData.language,
       };
-  
+
       await createReservation(reservationData);
-  
+
       setIsPopupOpen(false);
       setIsSuccessMessageVisible(true);
-  
+
       setTimeout(() => {
         setIsSuccessMessageVisible(false);
       }, 3000);
-  
+
       // Refresh time slots
-      const updatedTimeSlots = await fetchTimeSlots(
-        selectedChapter._id,
-        currentDate.toISOString().split("T")[0]
-      );
-      setTimeSlots((prev) => ({
-        ...prev,
-        [selectedChapter._id]: updatedTimeSlots,
-      }));
+      await loadTimeSlotsForDate(currentDate);
     } catch (error) {
       console.error("Error creating reservation:", error);
     } finally {
@@ -142,25 +138,47 @@ const Reservation = () => {
     }
   };
 
+  const formatDate = (date) =>
+    date.toLocaleDateString("fr-FR", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+  const formatTime = (time) =>
+    new Date(time).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
   return (
-    <div className="reservation-container">
-      <h1>Réservation</h1>
-      <div className="calendar-navigation">
-        <button className="nav-button" onClick={() => handleDateChange("prev")}>
-          &lt;
-        </button>
-        <span className="active-date">{formatDate(currentDate)}</span>
-        <button className="nav-button" onClick={() => handleDateChange("next")}>
-          &gt;
-        </button>
-      </div>
+<div className="reservation-container">
+  <h1>Réservation</h1>
+  <div className="calendar-navigation">
+    <button className="nav-button" onClick={() => handleDateChange("prev")}>
+      ◀
+    </button>
+    <div className="date-picker-container">
+      <input
+        type="date"
+        className="date-picker"
+        value={currentDate.toISOString().split("T")[0]}
+        onChange={handleDateSelect}
+      />
+    </div>
+    <button className="nav-button" onClick={() => handleDateChange("next")}>
+      ▶
+    </button>
+  </div>
+
 
       <div className="card_rs-container">
         {chapters.map((chapter) => (
           <div className="card_r" key={chapter._id}>
             <img src={chapter.image} alt={chapter.name} className="room-image" />
             <h3>{chapter.name}</h3>
-            <p>Joueurs: {chapter.players || "N/A"}</p>
+            <p>Joueurs:min 3 - max {chapter.playerNumber || "N/A"}</p>
             <div className="times">
               {timeSlots[chapter._id]?.length > 0 ? (
                 timeSlots[chapter._id].map((slot) => (
@@ -174,7 +192,7 @@ const Reservation = () => {
                   </button>
                 ))
               ) : (
-                <p className="coming-soon">Coming Soon</p>
+                <p className="coming-soon"> pas de date disponible</p>
               )}
             </div>
           </div>
@@ -255,7 +273,9 @@ const Reservation = () => {
 
       {isSuccessMessageVisible && (
         <div className="success-message">
-          Votre réservation a été confirmée. Un email sera envoyé.
+          <p className="success-message-text">
+            Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
+          </p>
         </div>
       )}
     </div>

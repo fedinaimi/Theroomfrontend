@@ -185,71 +185,74 @@
   }
 }
 /* Mobile Scenarios Container */
+/* Mobile Scenarios Container */
 .mobile-scenarios {
-    height: 100vh;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory;
-  }
-  
-  /* Fullscreen Video Section */
-  .mobile-video-section {
-    height: 100vh;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    scroll-snap-align: start;
-    overflow: hidden;
-  }
-  
-  /* Video Styling */
-  .mobile-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  /* Video Overlay */
-  .mobile-video-overlay {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    color: white;
-    text-align: left;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-  }
-  
-  .mobile-video-overlay h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
-  .mobile-video-overlay p {
-    font-size: 1rem;
-    margin: 10px 0;
-  }
-  
-  .cta-button {
-    background-color: #f26422;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-  
-  .cta-button:hover {
-    background-color: #e2501f;
-  }
-  
-  /* Hide Scrollbar */
-  .mobile-scenarios::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .mobile-scenarios {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Video Section Styling */
+.mobile-video-section {
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+/* Video Styling */
+.mobile-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Video Overlay */
+.mobile-video-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  text-align: left;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+}
+
+.mobile-video-overlay h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.mobile-video-overlay p {
+  font-size: 1rem;
+  margin: 10px 0;
+}
+
+/* Call-to-Action Button */
+.cta-button {
+  background-color: #f26422;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.cta-button:hover {
+  background-color: #e2501f;
+}
+
+/* Hide Scrollbar */
+.mobile-scenarios::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-scenarios {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

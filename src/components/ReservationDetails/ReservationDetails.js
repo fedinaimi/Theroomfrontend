@@ -9,10 +9,10 @@ import ButtonLoader from "../button/ButtonLoader";
 import "./ReservationDetails.css";
 
 function ReservationDetails() {
-  const { id } = useParams(); // Get the chapter ID from URL params
-  const { state } = useLocation(); // Get chapter data passed from ScenarioDetails
+  const { id } = useParams();
+  const { state } = useLocation();
 
-  const [chapter, setChapter] = useState(state?.chapter || null); // Use state or fallback to API
+  const [chapter, setChapter] = useState(state?.chapter || null);
   const [timeSlots, setTimeSlots] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -20,7 +20,7 @@ function ReservationDetails() {
     name: "",
     email: "",
     phone: "",
-    countryCode: "+33", // Default country code
+    countryCode: "+33",
     people: 1,
     language: "en",
   });
@@ -28,7 +28,7 @@ function ReservationDetails() {
   const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Fetch Chapter Details and Time Slots
+  // Fetch chapter details only once when the component mounts
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,20 +36,62 @@ function ReservationDetails() {
           const fetchedChapter = await fetchChapterDetails(id);
           setChapter(fetchedChapter);
         }
-        const formattedDate = currentDate.toISOString().split("T")[0];
-        const fetchedTimeSlots = await fetchTimeSlots(id, formattedDate);
-        setTimeSlots(
-          fetchedTimeSlots.map((slot) => ({
-            ...slot,
-            isAvailable: slot.isAvailable,
-          }))
-        );
+        await loadTimeSlots(currentDate); // Load time slots for the current date
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [id, chapter, currentDate]);
+  }, [id, chapter]);
+
+  // Dynamically fetch time slots whenever the date changes
+  useEffect(() => {
+    loadTimeSlots(currentDate);
+  }, [currentDate]);
+
+  const loadTimeSlots = async (date) => {
+    try {
+      const formattedDate = date.toISOString().split("T")[0];
+      const fetchedTimeSlots = await fetchTimeSlots(id, formattedDate);
+
+      const now = new Date();
+      const filteredTimeSlots = fetchedTimeSlots.filter((slot) => {
+        const slotTime = new Date(slot.startTime);
+        return date.toDateString() !== now.toDateString() || slotTime > now;
+      });
+
+      setTimeSlots(
+        filteredTimeSlots.map((slot) => ({
+          ...slot,
+          isAvailable: slot.isAvailable,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching time slots:", error);
+      setTimeSlots([]); // Reset time slots if an error occurs
+    }
+  };
+
+  const handlePrevDate = () => {
+    const prevDate = new Date(currentDate);
+    prevDate.setDate(currentDate.getDate() - 1);
+    if (prevDate >= new Date().setHours(0, 0, 0, 0)) {
+      setCurrentDate(prevDate);
+    }
+  };
+
+  const handleNextDate = () => {
+    const nextDate = new Date(currentDate);
+    nextDate.setDate(currentDate.getDate() + 1);
+    setCurrentDate(nextDate);
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = new Date(e.target.value);
+    if (selectedDate >= new Date().setHours(0, 0, 0, 0)) {
+      setCurrentDate(selectedDate);
+    }
+  };
 
   const handleReserveClick = (slot) => {
     setSelectedTimeSlot(slot);
@@ -85,7 +127,7 @@ function ReservationDetails() {
         )
       );
       setIsPopupOpen(false);
-      setSuccessMessage("Votre réservation a été confirmée. Un email sera envoyé.");
+      setSuccessMessage("Votre réservation est en cours de traitement. Attendez notre confirmation.");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Error creating reservation:", error);
@@ -97,17 +139,13 @@ function ReservationDetails() {
   const formatTime = (time) =>
     new Date(time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
 
-  const handlePrevDate = () => {
-    const prevDate = new Date(currentDate);
-    prevDate.setDate(currentDate.getDate() - 1);
-    setCurrentDate(prevDate);
-  };
-
-  const handleNextDate = () => {
-    const nextDate = new Date(currentDate);
-    nextDate.setDate(currentDate.getDate() + 1);
-    setCurrentDate(nextDate);
-  };
+  const formatDisplayDate = (date) =>
+    date.toLocaleDateString("fr-FR", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
 
   return (
     <div className="reservation-container">
@@ -116,14 +154,12 @@ function ReservationDetails() {
         <button className="nav-button" onClick={handlePrevDate}>
           ◀
         </button>
-        <span className="active-date">
-          {currentDate.toLocaleDateString("fr-FR", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </span>
+        <input
+          type="date"
+          className="date-picker"
+          value={currentDate.toISOString().split("T")[0]}
+          onChange={handleDateChange}
+        />
         <button className="nav-button" onClick={handleNextDate}>
           ▶
         </button>
@@ -134,11 +170,10 @@ function ReservationDetails() {
           alt={chapter?.name || "Chapter"}
           className="reservation-image"
         />
-        <p className="reservation-description">{chapter?.description || "No description available."}</p>
         <h3 className="availability-title">Disponibilités</h3>
         <div className="availability-list">
           {timeSlots.length === 0 ? (
-            <p>Coming Soon</p>
+            <p className="no-availability">pas de date disponible</p>
           ) : (
             timeSlots.map((slot) => (
               <button
@@ -227,7 +262,9 @@ function ReservationDetails() {
         </div>
       )}
 
-      {successMessage && <div className="success-message">{successMessage}</div>}
+      {successMessage && <div className="success-message"> <p className="success-message-text">
+      Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
+    </p></div>}
     </div>
   );
 }

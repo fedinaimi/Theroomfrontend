@@ -206,19 +206,59 @@
   }
   
   /* Success Message */
+/* Success Message Styling */
+.success-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 1.5rem;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  animation: fadeInOut 3s ease-in-out;
+}
+
+/* Success Message Text */
+.success-message-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #f26422;
+}
+
+/* Responsive Success Message */
+@media (max-width: 768px) {
   .success-message {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #222;
-    color: #f26422;
-    padding: 1.5rem 3rem;
-    border-radius: 15px;
-    font-size: 1.5rem;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    padding: 1rem;
+    width: 95%;
   }
+  .success-message-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .success-message-text {
+    font-size: 0.8rem;
+  }
+}
+
+/* Animation for Success Message */
+@keyframes fadeInOut {
+  0%, 85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
   
   /* Responsive Adjustments */
   @media (max-width: 1024px) {
@@ -257,5 +297,42 @@
     .popup-title {
       font-size: 1.3rem;
     }
+  }
+  .calendar-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.5rem;
+    background-color: rgba(37, 37, 37, 0.8);
+    border: 1px solid #f26422;
+    border-radius: 30px;
+    padding: 10px 20px;
+    width: 60%;
+    max-width: 600px;
+    margin: 1rem auto;
+    text-shadow: 1px 1px 5px rgba(242, 100, 34, 0.8);
+  }
+  
+  .nav-button {
+    background-color: #f26422;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 0.6rem 1rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .nav-button:hover {
+    background-color: #444;
+  }
+  
+  .active-date {
+    font-size: 1.5rem;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    flex-grow: 1;
   }
   
