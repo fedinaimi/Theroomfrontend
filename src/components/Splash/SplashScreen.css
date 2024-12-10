@@ -4,7 +4,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: black;
+    background-color: rgb(0, 0, 0);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,8 +12,8 @@
   }
   
   .splash-video {
-    width: 30%;
-    height: 30%;
+    width: 15%;
+    height: 15%;
     object-fit: cover;
   }
   

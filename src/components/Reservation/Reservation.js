@@ -178,7 +178,7 @@ const Reservation = () => {
           <div className="card_r" key={chapter._id}>
             <img src={chapter.image} alt={chapter.name} className="room-image" />
             <h3>{chapter.name}</h3>
-            <p>Joueurs:min 3 - max {chapter.playerNumber || "N/A"}</p>
+            <p>Joueurs:min {chapter.minPlayerNumber} - max {chapter.maxPlayerNumber || "N/A"}</p>
             <div className="times">
               {timeSlots[chapter._id]?.length > 0 ? (
                 timeSlots[chapter._id].map((slot) => (
