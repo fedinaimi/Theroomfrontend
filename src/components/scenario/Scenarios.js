@@ -6,27 +6,25 @@ import { getAllChapters } from "../../services/chapterService";
 
 function Scenarios() {
   const navigate = useNavigate();
-  const [scenarios, setScenarios] = useState([]); // Dynamic scenarios from backend
+  const [scenarios, setScenarios] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
 
   useEffect(() => {
-  const handleResize = () => setIsMobile(window.innerWidth <= 992);
-  window.addEventListener("resize", handleResize);
+    const handleResize = () => setIsMobile(window.innerWidth <= 992);
+    window.addEventListener("resize", handleResize);
 
-  async function fetchScenarios() {
-    try {
-      const fetchedScenarios = await getAllChapters();
-      console.log("Fetched scenarios:", fetchedScenarios); // Log the fetched data
-      setScenarios(fetchedScenarios); // Update state with backend data
-    } catch (error) {
-      console.error("Error fetching scenarios:", error);
+    async function fetchScenarios() {
+      try {
+        const fetchedScenarios = await getAllChapters();
+        setScenarios(fetchedScenarios);
+      } catch (error) {
+        console.error("Error fetching scenarios:", error);
+      }
     }
-  }
 
-  fetchScenarios();
-
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+    fetchScenarios();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   if (isMobile) {
     return (

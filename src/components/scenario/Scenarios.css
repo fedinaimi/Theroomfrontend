@@ -256,3 +256,27 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+.scenario-description {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  height: 70px; /* Fixed height for uniformity */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Show maximum 3 lines */
+  -webkit-box-orient: vertical;
+}
+
+/* Responsive Scenarios Container */
+@media (max-width: 992px) {
+  .scenarios-container {
+    grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+  }
+}
+
+@media (max-width: 576px) {
+  .scenarios-container {
+    grid-template-columns: 1fr; /* One column for small screens */
+  }
+}
