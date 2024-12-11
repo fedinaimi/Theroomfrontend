@@ -62,7 +62,7 @@ function ScenarioDetails() {
           <ul className="info-list">
             <li>
               <FontAwesomeIcon icon={faUsers} className="logo" />
-              <strong>Players:</strong>min 3 max {chapter.playerNumber || "Not specified"}
+              <strong>Players:</strong>min:{chapter.minPlayerNumber} max : {chapter.maxPlayerNumber || "Not specified"}
             </li>
             <li style={{ color: difficultyColor }}>
               ⭐ <strong>Difficulty:</strong> {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}

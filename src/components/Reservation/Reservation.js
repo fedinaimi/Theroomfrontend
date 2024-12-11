@@ -25,6 +25,7 @@ const Reservation = () => {
     people: 1,
     language: "en",
   });
+  const [errors, setErrors] = useState({});
 
   // Fetch chapters on mount
   useEffect(() => {
@@ -39,6 +40,35 @@ const Reservation = () => {
     loadChapters();
   }, []);
 
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Le nom est requis.";
+    if (!formData.email.trim()) {
+      newErrors.email = "L'adresse email est requise.";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Adresse email invalide.";
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Le numéro de téléphone est requis.";
+    } else if (!/^\d+$/.test(formData.phone)) {
+      newErrors.phone = "Le numéro de téléphone doit contenir uniquement des chiffres.";
+    }
+  
+    // Validate number of players
+    if (selectedChapter) {
+      const { minPlayerNumber, maxPlayerNumber } = selectedChapter;
+      const playerCount = Number(formData.people);
+  
+      if (isNaN(playerCount) || playerCount < minPlayerNumber || playerCount > maxPlayerNumber) {
+        newErrors.people = `Le nombre de joueurs doit être entre ${minPlayerNumber} et ${maxPlayerNumber}.`;
+      }
+    } else {
+      newErrors.people = "Veuillez sélectionner un chapitre.";
+    }
+  
+    return newErrors;
+  };
+  
   // Fetch time slots based on the current date and chapters
   const loadTimeSlotsForDate = async (date) => {
     if (chapters.length === 0) return;
@@ -206,67 +236,89 @@ const Reservation = () => {
               Réservation pour {selectedChapter?.name} à {formatTime(selectedTimeSlot?.startTime)}
             </h2>
             <form className="popup-form" onSubmit={handleSubmit}>
-              <label>Nom:</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleFormChange}
-                required
-              />
-              <label>Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleFormChange}
-                required
-              />
-              <label>Téléphone:</label>
-              <div className="phone-input">
-                <select
-                  name="countryCode"
-                  value={formData.countryCode}
-                  onChange={handleFormChange}
-                >
-                  {countryCodes.map((country) => (
-                    <option key={country.code} value={country.dialCode}>
-                      {country.flag} {country.name} ({country.dialCode})
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleFormChange}
-                  placeholder="Numéro de téléphone"
-                  required
-                />
-              </div>
-              <label>Nombre de personnes:</label>
-              <input
-                type="number"
-                name="people"
-                value={formData.people}
-                onChange={handleFormChange}
-                min="1"
-                required
-              />
-              <label>Langue:</label>
-              <select name="language" value={formData.language} onChange={handleFormChange}>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-              </select>
-              <div className="popup-buttons">
-                <button type="submit" className="submit-button" disabled={isLoading}>
-                  {isLoading ? <ButtonLoader /> : "Confirmer"}
-                </button>
-                <button type="button" className="cancel-button" onClick={handleClosePopup}>
-                  Annuler
-                </button>
-              </div>
-            </form>
+  <label>Nom:</label>
+  <input
+    type="text"
+    name="name"
+    value={formData.name}
+    onChange={handleFormChange}
+    placeholder="Entrez votre nom"
+    className={errors.name ? "input-error" : ""}
+    required
+  />
+  {errors.name && <p className="error-message">{errors.name}</p>}
+
+  <label>Email:</label>
+  <input
+    type="email"
+    name="email"
+    value={formData.email}
+    onChange={handleFormChange}
+    placeholder="Entrez votre adresse email"
+    className={errors.email ? "input-error" : ""}
+    required
+  />
+  {errors.email && <p className="error-message">{errors.email}</p>}
+
+  <label>Téléphone:</label>
+  <div className="phone-input">
+    <select
+      name="countryCode"
+      value={formData.countryCode}
+      onChange={handleFormChange}
+    >
+      {countryCodes.map((country) => (
+        <option key={country.code} value={country.dialCode}>
+          {country.flag} {country.name} ({country.dialCode})
+        </option>
+      ))}
+    </select>
+    <input
+      type="tel"
+      name="phone"
+      value={formData.phone}
+      onChange={handleFormChange}
+      placeholder="Entrez votre numéro de téléphone"
+      className={errors.phone ? "input-error" : ""}
+      required
+    />
+  </div>
+  {errors.phone && <p className="error-message">{errors.phone}</p>}
+
+  <label>Nombre de personnes:</label>
+<input
+  type="number"
+  name="people"
+  value={formData.people}
+  onChange={handleFormChange}
+  placeholder="Nombre de participants"
+  className={errors.people ? "input-error" : ""}
+  min={selectedChapter?.minPlayerNumber || 1}
+  max={selectedChapter?.maxPlayerNumber || 10}
+  required
+/>
+{errors.people && <p className="error-message">{errors.people}</p>}
+
+  <label>Langue:</label>
+  <select
+    name="language"
+    value={formData.language}
+    onChange={handleFormChange}
+  >
+    <option value="en">English</option>
+    <option value="fr">Français</option>
+  </select>
+
+  <div className="popup-buttons">
+    <button type="submit" className="submit-button" disabled={isLoading}>
+      {isLoading ? <ButtonLoader /> : "Confirmer"}
+    </button>
+    <button type="button" className="cancel-button" onClick={handleClosePopup}>
+      Annuler
+    </button>
+  </div>
+</form>
+
           </div>
         </div>
       )}

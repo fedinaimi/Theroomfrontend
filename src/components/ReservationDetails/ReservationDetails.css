@@ -335,4 +335,12 @@
     font-weight: bold;
     flex-grow: 1;
   }
+  .input-error {
+    border: 1px solid red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.8rem;
+  }
   
