@@ -10,17 +10,33 @@ export const fetchChapterDetails = async (chapterId) => {
 
 // Fetch Time Slots for a Chapter and Date
 export const fetchTimeSlots = async (chapterId, date) => {
-  const response = await axiosInstance.get(`/timeSlots`, {
-    params: { chapterId, date },
-  });
-  return response.data;
+  try {
+    const response = await axiosInstance.get(`/timeSlots`, {
+      params: { chapterId, date },
+    });
+    return response.data || [];
+  } catch {
+    // Ignore errors and return an empty array
+    return [];
+  }
 };
+
 
 // Create a Reservation
 export const createReservation = async (reservationData) => {
-  const response = await axiosInstance.post(`/reservations`, reservationData);
-  return response.data;
+  try {
+    const response = await axiosInstance.post(`/reservations`, reservationData);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data && error.response.data.message) {
+      // Pass backend error message
+      throw new Error(error.response.data.message);
+    }
+    // Fallback for unexpected errors
+    throw new Error("Une erreur s'est produite. Veuillez réessayer.");
+  }
 };
+
 export const getAllChapters = async () => {
     try {
       const response = await axiosInstance.get(`/chapters`);

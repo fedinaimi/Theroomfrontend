@@ -71,14 +71,15 @@ function App() {
                   <div id="scenarios-section">
                     <Scenarios />
                   </div>
-                  <div id="apropos">
-                    <About />
-                  </div>
+                 
                   <div id="teambuilding">
                     <TeamBuilding />
                   </div>
                   <div id="reservation">
                     <Reservation />
+                  </div>
+                  <div id="apropos">
+                    <About />
                   </div>
                   <div id="contact">
                     <ContactUs />

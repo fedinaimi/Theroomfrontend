@@ -3,22 +3,27 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ScenarioDetails.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faClock, faUsers, faBook } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 import { getChapterById } from "../../services/chapterService";
 
 function ScenarioDetails() {
-  const { id } = useParams(); // Get chapter ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [chapter, setChapter] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Success percentage for the chapter
+  const [successPercentage, setSuccessPercentage] = useState(0);
+
   useEffect(() => {
     async function fetchChapter() {
       try {
-        const fetchedChapter = await getChapterById(id); // Use the service
-        setChapter(fetchedChapter); // Set chapter details
+        const fetchedChapter = await getChapterById(id);
+        setChapter(fetchedChapter);
+
+        // Simulate success percentage based on fetched data (placeholder logic)
+        setSuccessPercentage(fetchedChapter.successRate || 75); // Use `successRate` or fallback to 75%
       } catch (err) {
         console.error("Error fetching chapter:", err);
         setError("Failed to load chapter details.");
@@ -43,7 +48,6 @@ function ScenarioDetails() {
     );
   }
 
-  // Determine difficulty and its color
   const difficulty = chapter?.difficulty || "unknown";
   const difficultyColor =
     difficulty === "easy" ? "green" : difficulty === "medium" ? "orange" : difficulty === "hard" ? "red" : "gray";
@@ -62,7 +66,7 @@ function ScenarioDetails() {
           <ul className="info-list">
             <li>
               <FontAwesomeIcon icon={faUsers} className="logo" />
-              <strong>Players:</strong>min:{chapter.minPlayerNumber} max : {chapter.maxPlayerNumber || "Not specified"}
+              <strong>Players:</strong> min:{chapter.minPlayerNumber} max: {chapter.maxPlayerNumber || "Not specified"}
             </li>
             <li style={{ color: difficultyColor }}>
               ⭐ <strong>Difficulty:</strong> {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
@@ -82,12 +86,24 @@ function ScenarioDetails() {
               </li>
             )}
           </ul>
+          <div className="success-bar-container">
+            <p className="success-text">
+              <strong>Success Rate:</strong> {chapter.percentageOfSuccess}%
+            </p>
+            <div className="success-bar">
+              <div
+                className="success-bar-fill"
+                style={{ width: `${chapter.percentageOfSuccess}%` }}
+              ></div>
+            </div>
+          </div>
           <div className="button-container">
             <button
               className="reserve-button"
               onClick={() =>
                 navigate(`/reservation-details/${chapter._id}`, { state: { chapter } })
-              }            >
+              }
+            >
               Réserver Maintenant
             </button>
           </div>

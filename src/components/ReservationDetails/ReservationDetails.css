@@ -343,4 +343,127 @@
     color: red;
     font-size: 0.8rem;
   }
-  
+  /* Error Message Styling */
+.error-message-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  padding: 1.5rem;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  animation: fadeInOut 3s ease-in-out;
+}
+
+/* Error Message Text */
+.error-message-text {
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: red;
+}
+
+/* Responsive Error Message */
+@media (max-width: 768px) {
+  .error-message-container {
+    padding: 1rem;
+    width: 95%;
+  }
+  .error-message-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-message-text {
+    font-size: 0.8rem;
+  }
+}
+
+/* Animation for Error Message */
+@keyframes fadeInOut {
+  0%, 85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+/* Time Slot Status Styles */
+
+
+.time-slot.pending {
+  background-color: #ffc107; /* Yellow */
+  color: black;
+}
+
+.time-slot.booked {
+  background-color: #dc3545; /* Red */
+  color: white;
+}
+
+.time-slot.unavailable {
+  background-color: gray;
+  color: white;
+}
+
+.time-slot {
+  padding: 8px 10px;
+  border-radius: 15px;
+  border: 1px solid #f26422;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover Effects */
+
+
+.time-slot.pending:hover,
+.time-slot.booked:hover,
+.time-slot.unavailable:hover {
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Legend Styles */
+.legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+}
+
+.legend-color.available {
+  background-color:  #f26422;
+}
+
+.legend-color.pending {
+  background-color: #ffc107; /* Yellow */
+}
+
+.legend-color.booked {
+  background-color: gray;
+}
+
+.legend-color.unavailable {
+  background-color: gray;
+}

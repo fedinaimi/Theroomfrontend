@@ -42,11 +42,12 @@ const Navbar = () => {
               <li>
                 <a href="#scenarios-section">Scénarios</a>
               </li>
-              <li>
-                <a href="#apropos">À propos</a>
-              </li>
+              
               <li>
                 <a href="#teambuilding">Teambuilding</a>
+              </li>
+              <li>
+                <a href="#apropos">À propos</a>
               </li>
               <li>
                 <a href="#contact">Contact</a>
@@ -60,11 +61,12 @@ const Navbar = () => {
               <li>
                 <Link to="/#scenarios-section">Scénarios</Link>
               </li>
-              <li>
-                <Link to="/#apropos">À propos</Link>
-              </li>
+            
               <li>
                 <Link to="/#teambuilding">Teambuilding</Link>
+              </li>
+              <li>
+                <Link to="/#apropos">À propos</Link>
               </li>
               <li>
                 <Link to="/#contact">Contact</Link>
@@ -95,14 +97,15 @@ const Navbar = () => {
               <span>Scénarios</span>
             </Link>
           </li>
-          <li>
-            <Link to="/#apropos" onClick={closeSidebar}>
-              <span>À propos</span>
-            </Link>
-          </li>
+      
           <li>
             <Link to="/#teambuilding" onClick={closeSidebar}>
               <span>Teambuilding</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/#apropos" onClick={closeSidebar}>
+              <span>À propos</span>
             </Link>
           </li>
           <li>

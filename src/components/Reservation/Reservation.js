@@ -23,9 +23,10 @@ const Reservation = () => {
     phone: "",
     countryCode: "+216",
     people: 1,
-    language: "en",
+    language: "fr",
   });
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch chapters on mount
   useEffect(() => {
@@ -137,7 +138,16 @@ const Reservation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-
+    setErrors({});
+    setErrorMessage(""); // Clear previous errors
+  
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setIsLoading(false);
+      return;
+    }
+  
     try {
       const reservationData = {
         scenario: selectedChapter?.scenario?._id,
@@ -149,24 +159,28 @@ const Reservation = () => {
         people: formData.people,
         language: formData.language,
       };
-
+  
       await createReservation(reservationData);
-
+  
       setIsPopupOpen(false);
       setIsSuccessMessageVisible(true);
-
       setTimeout(() => {
         setIsSuccessMessageVisible(false);
       }, 3000);
-
+  
       // Refresh time slots
       await loadTimeSlotsForDate(currentDate);
     } catch (error) {
-      console.error("Error creating reservation:", error);
+      console.error("Error creating reservation:", error.message);
+      setErrorMessage(error.message); // Display backend error message
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 5000); // Clear error after 5 seconds
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const formatDate = (date) =>
     date.toLocaleDateString("fr-FR", {
@@ -210,20 +224,21 @@ const Reservation = () => {
             <h3>{chapter.name}</h3>
             <p>Joueurs:min {chapter.minPlayerNumber} - max {chapter.maxPlayerNumber || "N/A"}</p>
             <div className="times">
-              {timeSlots[chapter._id]?.length > 0 ? (
-                timeSlots[chapter._id].map((slot) => (
-                  <button
-                    key={slot._id}
-                    className={`time-slot ${slot.isAvailable ? "" : "unavailable"}`}
-                    onClick={() => handleOpenPopup(chapter, slot)}
-                    disabled={!slot.isAvailable}
-                  >
-                    {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                  </button>
-                ))
-              ) : (
-                <p className="coming-soon"> pas de date disponible</p>
-              )}
+            {timeSlots[chapter._id]?.length > 0 ? (
+  timeSlots[chapter._id].map((slot) => (
+    <button
+      key={slot._id}
+      className={`time-slot ${slot.status}`}
+      onClick={() => handleOpenPopup(chapter, slot)}
+      disabled={slot.status !== 'available'}
+    >
+      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+    </button>
+  ))
+) : (
+  <p className="coming-soon">Pas de date disponible</p>
+)}
+
             </div>
           </div>
         ))}
@@ -305,8 +320,9 @@ const Reservation = () => {
     value={formData.language}
     onChange={handleFormChange}
   >
+  <option value="fr">Français</option>
     <option value="en">English</option>
-    <option value="fr">Français</option>
+    
   </select>
 
   <div className="popup-buttons">
@@ -330,7 +346,30 @@ const Reservation = () => {
           </p>
         </div>
       )}
+      {errorMessage && (
+  <div className="error-message-container">
+    <p className="error-message-text">{errorMessage}</p>
+  </div>
+)}
+
+<div className="legend">
+  <div className="legend-item">
+    <span className="legend-color available"></span>
+    <span>Disponible</span>
+  </div>
+  <div className="legend-item">
+    <span className="legend-color pending"></span>
+    <span>En attente</span>
+  </div>
+  <div className="legend-item">
+    <span className="legend-color booked"></span>
+    <span>Réservé</span>
+  </div>
+
+</div>
+
     </div>
+    
   );
 };
 
