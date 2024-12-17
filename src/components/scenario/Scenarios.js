@@ -26,11 +26,17 @@ function Scenarios() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const renderPercentageBadge = (percentage) => (
+    <div className="percentage-badge">
+      {percentage}% Success Rate
+    </div>
+  );
+
   if (isMobile) {
     return (
       <div className="mobile-scenarios">
         {scenarios.map((scenario) => (
-          <div key={scenario._id} className="mobile-video-section">
+          <section key={scenario._id} className="mobile-video-section">
             <video
               className="mobile-video"
               autoPlay
@@ -42,7 +48,10 @@ function Scenarios() {
               Your browser does not support the video tag.
             </video>
             <div className="mobile-video-overlay">
-              <h2>{scenario.name}</h2>
+              <h2>
+                {scenario.name}
+                {renderPercentageBadge(scenario.percentageOfSuccess)}
+              </h2>
               <p>{scenario.description}</p>
               <button
                 className="cta-button"
@@ -53,7 +62,7 @@ function Scenarios() {
                 En savoir plus →
               </button>
             </div>
-          </div>
+          </section>
         ))}
       </div>
     );
@@ -69,7 +78,10 @@ function Scenarios() {
               <img src={scenario.image} alt={scenario.name} />
             </div>
             <div className="scenario-info">
-              <h3>{scenario.name}</h3>
+              <div className="header-with-badge">
+                <h3>{scenario.name}</h3>
+                {renderPercentageBadge(scenario.percentageOfSuccess)}
+              </div>
               <p className="scenario-description">{scenario.description}</p>
               <Button
                 text="En savoir plus →"

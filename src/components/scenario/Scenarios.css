@@ -189,11 +189,11 @@
 .mobile-scenarios {
   height: 100vh;
   overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y mandatory; /* Snap to sections */
   -webkit-overflow-scrolling: touch;
 }
 
-/* Video Section Styling */
+/* Mobile Video Section Styling */
 .mobile-video-section {
   height: 100vh;
   position: relative;
@@ -202,6 +202,7 @@
   align-items: center;
   scroll-snap-align: start;
   overflow: hidden;
+  background-color: black; /* Ensure a clean background */
 }
 
 /* Video Styling */
@@ -214,8 +215,8 @@
 /* Video Overlay */
 .mobile-video-overlay {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
+  bottom: 10%;
+  left: 5%;
   color: white;
   text-align: left;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
@@ -225,6 +226,7 @@
 .mobile-video-overlay h2 {
   font-size: 1.5rem;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .mobile-video-overlay p {
@@ -241,10 +243,26 @@
   border-radius: 25px;
   cursor: pointer;
   font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .cta-button:hover {
   background-color: #e2501f;
+  transform: scale(1.05);
+}
+
+/* Percentage Badge */
+.percentage-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #28a745, #f26422);
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  padding: 5px 10px;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
 }
 
 /* Hide Scrollbar */
@@ -253,9 +271,10 @@
 }
 
 .mobile-scenarios {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
+
 .scenario-description {
   font-size: 1rem;
   line-height: 1.5;
@@ -318,4 +337,43 @@
 /* Button Hover Effect */
 .scenario-card .custom-button {
   margin-top: 20px;
+}
+/* Percentage Badge */
+.percentage-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #28a745, #f26422);
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-radius: 20px;
+  padding: 5px 10px;
+  margin: 1px 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+}
+
+/* Header with Badge */
+.header-with-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Fix Mobile Button Issue */
+.cta-button {
+  position: relative;
+  bottom: 0;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.mobile-video-overlay {
+  bottom: 10%;
+  left: 5%;
+  right: 5%;
+}
+
+.cta-button:hover {
+  background-color: #e2501f;
 }
