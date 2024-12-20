@@ -93,4 +93,39 @@
       height: 250px;
     }
   }
+  .go-to-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #f26422;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .go-to-button:hover {
+    background-color: #d9531b;
+  }
+  .map-button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #f26422;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .map-button i {
+    margin-right: 8px;
+  }
+  
+  .map-button:hover {
+    background-color: #d9531b;
+  }
   
