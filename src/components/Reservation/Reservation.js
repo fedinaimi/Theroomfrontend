@@ -265,7 +265,7 @@ const Reservation = () => {
                   slot.isNext ? (
                     <a
                       key={slot._id}
-                      href={formatPhoneNumber("+21612345678")} // Replace with your desired phone number
+                      href={formatPhoneNumber("+21625499810")} // Replace with your desired phone number
                       className="time-slot phone-slot"
                     >
                       <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}

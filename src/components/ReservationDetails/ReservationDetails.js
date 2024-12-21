@@ -1,3 +1,5 @@
+// src/components/ReservationDetails/ReservationDetails.js
+
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import {
@@ -5,8 +7,10 @@ import {
   fetchTimeSlots,
   createReservation,
 } from "../../services/reservationService";
-import ButtonLoader from "../button/ButtonLoader";
 import "./ReservationDetails.css";
+import { FaPhoneAlt } from "react-icons/fa"; // Import the phone icon
+import ButtonLoader from "../button/ButtonLoader";
+import countryCodes from "../../data/countryCodes.json";
 
 function ReservationDetails() {
   const { id } = useParams();
@@ -17,19 +21,20 @@ function ReservationDetails() {
   const [timeSlots, setTimeSlots] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    countryCode: "+33",
+    countryCode: "+216",
     people: 1,
     language: "fr",
   });
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({});
 
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Le nom est requis.";
@@ -53,6 +58,7 @@ function ReservationDetails() {
     }
     return newErrors;
   };
+
   // Fetch chapter details only once when the component mounts
   useEffect(() => {
     const fetchData = async () => {
@@ -67,11 +73,13 @@ function ReservationDetails() {
       }
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, chapter]);
 
   // Dynamically fetch time slots whenever the date changes
   useEffect(() => {
     loadTimeSlots(currentDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
 
   const loadTimeSlots = async (date) => {
@@ -85,12 +93,23 @@ function ReservationDetails() {
         return date.toDateString() !== now.toDateString() || slotTime > now;
       });
 
-      setTimeSlots(
-        filteredTimeSlots.map((slot) => ({
-          ...slot,
-          isAvailable: slot.isAvailable,
-        }))
-      );
+      // Sort slots by start time
+      filteredTimeSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+
+      // Identify the next immediate slot (n+1)
+      const nextSlot = filteredTimeSlots.find((slot) => {
+        const slotTime = new Date(slot.startTime);
+        const diffInHours = (slotTime - now) / (1000 * 60 * 60);
+        return diffInHours >= 0;
+      });
+
+      // Map slots and mark the next slot
+      const mappedSlots = filteredTimeSlots.map((slot) => ({
+        ...slot,
+        isNext: nextSlot ? slot._id === nextSlot._id : false,
+      }));
+
+      setTimeSlots(mappedSlots);
     } catch (error) {
       console.error("Error fetching time slots:", error);
       setTimeSlots([]); // Reset time slots if an error occurs
@@ -133,33 +152,37 @@ function ReservationDetails() {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrors({});
     setErrorMessage("");
-  
+
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setIsSubmitting(false);
       return;
     }
-  
+
     try {
       const reservationData = {
         scenario: chapter?.scenario?._id,
         chapter: chapter._id,
         timeSlot: selectedTimeSlot._id,
+        name: formData.name,
+        email: formData.email,
         phone: `${formData.countryCode}${formData.phone}`,
-        ...formData,
+        people: formData.people,
+        language: formData.language,
       };
-  
+
       await createReservation(reservationData);
-  
+
       // Refresh time slots after reservation
       await loadTimeSlots(currentDate);
-  
+
       setSuccessMessage("Votre réservation est en cours de traitement. Attendez notre confirmation.");
       setTimeout(() => setSuccessMessage(""), 3000);
       setIsPopupOpen(false);
@@ -171,8 +194,6 @@ function ReservationDetails() {
       setIsSubmitting(false);
     }
   };
-  
-  
 
   const formatTime = (time) =>
     new Date(time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
@@ -184,6 +205,8 @@ function ReservationDetails() {
       month: "long",
       day: "numeric",
     });
+
+  const formatPhoneNumber = (phone) => `tel:${phone}`;
 
   return (
     <div className="reservation-container">
@@ -210,149 +233,166 @@ function ReservationDetails() {
         />
         <h3 className="availability-title">Disponibilités</h3>
         <div className="availability-list">
-        {timeSlots.length === 0 ? (
-  <p className="no-availability">pas de date disponible</p>
-) : (
-  timeSlots.map((slot) => (
-    <button
-      key={slot._id}
-      className={`time-slot ${slot.status}`} // Dynamically add class based on status
-      onClick={() => handleReserveClick(slot)}
-      disabled={slot.status !== "available"} // Only allow clicks for "available" slots
-    >
-      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-    </button>
-  ))
-)}
+          {timeSlots.length === 0 ? (
+            <p className="no-availability">Pas de date disponible</p>
+          ) : (
+            timeSlots.map((slot) => (
+              slot.isNext ? (
+                <a
+                  key={slot._id}
+                  href={formatPhoneNumber("+21625499810")} // Replace with your desired phone number
+                  className="time-slot phone-slot"
+                >
+                  <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
+                </a>
+              ) : (
+                <button
+                  key={slot._id}
+                  className={`time-slot ${slot.status}`} // Dynamically add class based on status
+                  onClick={() => handleReserveClick(slot)}
+                  disabled={slot.status !== "available"} // Only allow clicks for "available" slots
+                >
+                  {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                </button>
+              )
+            ))
+          )}
         </div>
       </div>
 
-  {isPopupOpen && (
-  <div className="popup-overlay">
-    <div className="popup">
-      <h2 className="popup-title">
-        Réserver pour {formatTime(selectedTimeSlot?.startTime) || "N/A"}
-      </h2>
-      <form onSubmit={handleSubmit} className="popup-form">
-        {/* Name Field */}
-        <label>Nom:</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleFormChange}
-          placeholder="Entrez votre nom"
-          className={errors.name ? "input-error" : ""}
-          required
-        />
-        {errors.name && <p className="error-message">{errors.name}</p>}
+      {/* Reservation Popup */}
+      {isPopupOpen && (
+        <div className="popup-overlay">
+          <div className="popup">
+            <h2 className="popup-title">
+              Réserver pour {formatTime(selectedTimeSlot?.startTime) || "N/A"}
+            </h2>
+            <form onSubmit={handleSubmit} className="popup-form">
+              {/* Name Field */}
+              <label>Nom:</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                placeholder="Entrez votre nom"
+                className={errors.name ? "input-error" : ""}
+                required
+              />
+              {errors.name && <p className="error-message">{errors.name}</p>}
 
-        {/* Email Field */}
-        <label>Email:</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleFormChange}
-          placeholder="Entrez votre adresse email"
-          className={errors.email ? "input-error" : ""}
-          required
-        />
-        {errors.email && <p className="error-message">{errors.email}</p>}
+              {/* Email Field */}
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleFormChange}
+                placeholder="Entrez votre adresse email"
+                className={errors.email ? "input-error" : ""}
+                required
+              />
+              {errors.email && <p className="error-message">{errors.email}</p>}
 
-        {/* Phone Field */}
-        <label>Téléphone:</label>
-        <div className="phone-input">
-          <select
-            className="country-code"
-            name="countryCode"
-            value={formData.countryCode}
-            onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
-          >
-            <option value="+33">🇫🇷 +33</option>
-            <option value="+216">🇹🇳 +216</option>
-            <option value="+1">🇺🇸 +1</option>
-            <option value="+44">🇬🇧 +44</option>
-            <option value="+49">🇩🇪 +49</option>
-          </select>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleFormChange}
-            placeholder="Numéro de téléphone"
-            className={errors.phone ? "input-error" : ""}
-            required
-          />
+              {/* Phone Field */}
+              <label>Téléphone:</label>
+              <div className="phone-input">
+                <select
+                  className="country-code"
+                  name="countryCode"
+                  value={formData.countryCode}
+                  onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                >
+                  {countryCodes.map((country) => (
+                    <option key={country.code} value={country.dialCode}>
+                      {country.flag} {country.name} ({country.dialCode})
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleFormChange}
+                  placeholder="Numéro de téléphone"
+                  className={errors.phone ? "input-error" : ""}
+                  required
+                />
+              </div>
+              {errors.phone && <p className="error-message">{errors.phone}</p>}
+
+              {/* Number of Players Field */}
+              <label>Nombre de personnes:</label>
+              <input
+                type="number"
+                name="people"
+                value={formData.people}
+                onChange={handleFormChange}
+                placeholder="Nombre de participants"
+                min={chapter?.minPlayerNumber || 1}
+                max={chapter?.maxPlayerNumber || 10}
+                className={errors.people ? "input-error" : ""}
+                required
+              />
+              {errors.people && <p className="error-message">{errors.people}</p>}
+
+              {/* Language Field */}
+              <label>Langue:</label>
+              <select
+                name="language"
+                value={formData.language}
+                onChange={handleFormChange}
+                required
+              >
+                <option value="en">English</option>
+                <option value="fr">Français</option>
+              </select>
+
+              {/* Form Buttons */}
+              <div className="popup-buttons">
+                <button type="submit" className="submit-button" disabled={isSubmitting}>
+                  {isSubmitting ? <ButtonLoader /> : "Confirmer"}
+                </button>
+                <button type="button" className="cancel-button" onClick={handleClosePopup}>
+                  Annuler
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-        {errors.phone && <p className="error-message">{errors.phone}</p>}
+      )}
 
-        {/* Number of Players Field */}
-        <label>Nombre de personnes:</label>
-        <input
-          type="number"
-          name="people"
-          value={formData.people}
-          onChange={handleFormChange}
-          placeholder="Nombre de participants"
-          min={chapter?.minPlayerNumber || 1}
-          max={chapter?.maxPlayerNumber || 10}
-          className={errors.people ? "input-error" : ""}
-          required
-        />
-        {errors.people && <p className="error-message">{errors.people}</p>}
-
-        {/* Language Field */}
-        <label>Langue:</label>
-        <select
-          name="language"
-          value={formData.language}
-          onChange={handleFormChange}
-          required
-        >
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-        </select>
-
-        {/* Form Buttons */}
-        <div className="popup-buttons">
-          <button type="submit" className="submit-button">
-            {isSubmitting ? <ButtonLoader /> : "Confirmer"}
-          </button>
-          <button type="button" className="cancel-button" onClick={handleClosePopup}>
-            Annuler
-          </button>
+      {/* Success Message */}
+      {successMessage && (
+        <div className="success-message">
+          <p className="success-message-text">
+            Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
+          </p>
         </div>
-      </form>
-    </div>
-  </div>
-)}
+      )}
 
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="error-message-container">
+          <p className="error-message-text">{errorMessage}</p>
+        </div>
+      )}
 
-      {successMessage && <div className="success-message"> <p className="success-message-text">
-      Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
-    </p></div>}
-    {errorMessage && (
-    <div className="error-message-container">
-      <p className="error-message-text">{errorMessage}</p>
-    </div>
-  )}
-
-<div className="legend">
-  <div className="legend-item">
-    <span className="legend-color available"></span>
-    <span>Disponible</span>
-  </div>
-  <div className="legend-item">
-    <span className="legend-color pending"></span>
-    <span>En attente</span>
-  </div>
-  <div className="legend-item">
-    <span className="legend-color booked"></span>
-    <span>Réservé</span>
-  </div>
-
-</div>
+      {/* Legend */}
+      <div className="legend">
+        <div className="legend-item">
+          <span className="legend-color available"></span>
+          <span>Disponible</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-color pending"></span>
+          <span>En attente</span>
+        </div>
+        <div className="legend-item">
+          <span className="legend-color booked"></span>
+          <span>Réservé</span>
+        </div>
+      </div>
     </div>
   );
 }
