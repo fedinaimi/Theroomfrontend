@@ -1,6 +1,9 @@
+// src/components/Hero/Hero.js
+
 import React from "react";
 import "./Hero.css";
 import logo from "../../assets/logoEscapeF.png";
+import { FaArrowDown } from "react-icons/fa"; // Import de l'icône flèche vers le bas
 
 function Hero({ onArrowClick }) {
   return (
@@ -11,6 +14,11 @@ function Hero({ onArrowClick }) {
           <span></span>
           <span></span>
           <span></span>
+        </div>
+        {/* Nouvel Icône Cliquer Ici */}
+        <div className="click-here-container" onClick={onArrowClick}>
+         
+          <span className="click-here-text">Cliquer ici</span>
         </div>
       </div>
     </div>

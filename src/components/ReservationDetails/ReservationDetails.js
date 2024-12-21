@@ -8,7 +8,7 @@ import {
   createReservation,
 } from "../../services/reservationService";
 import "./ReservationDetails.css";
-import { FaPhoneAlt } from "react-icons/fa"; // Import the phone icon
+import { FaPhoneAlt } from "react-icons/fa"; // Import de l'icône téléphone
 import ButtonLoader from "../button/ButtonLoader";
 import countryCodes from "../../data/countryCodes.json";
 
@@ -33,6 +33,16 @@ function ReservationDetails() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({});
+
+  // Fonction pour vérifier si une date est aujourd'hui
+  const isToday = (date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
 
   // Form validation
   const validateForm = () => {
@@ -87,32 +97,38 @@ function ReservationDetails() {
       const formattedDate = date.toISOString().split("T")[0];
       const fetchedTimeSlots = await fetchTimeSlots(id, formattedDate);
 
+      const today = isToday(date);
       const now = new Date();
+
       const filteredTimeSlots = fetchedTimeSlots.filter((slot) => {
         const slotTime = new Date(slot.startTime);
-        return date.toDateString() !== now.toDateString() || slotTime > now;
+        return today ? slotTime >= now : true; // Si aujourd'hui, filtrer les slots passés
       });
 
-      // Sort slots by start time
+      // Trier les créneaux par heure de début
       filteredTimeSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
-      // Identify the next immediate slot (n+1)
-      const nextSlot = filteredTimeSlots.find((slot) => {
-        const slotTime = new Date(slot.startTime);
-        const diffInHours = (slotTime - now) / (1000 * 60 * 60);
-        return diffInHours >= 0;
-      });
+      let nextSlotId = null;
 
-      // Map slots and mark the next slot
+      if (today) {
+        // Identifier le prochain créneau disponible pour aujourd'hui
+        const nextSlot = filteredTimeSlots.find((slot) => {
+          const slotTime = new Date(slot.startTime);
+          return slotTime >= now;
+        });
+        nextSlotId = nextSlot ? nextSlot._id : null;
+      }
+
+      // Mapper les créneaux et marquer le prochain créneau uniquement pour aujourd'hui
       const mappedSlots = filteredTimeSlots.map((slot) => ({
         ...slot,
-        isNext: nextSlot ? slot._id === nextSlot._id : false,
+        isNext: today && slot._id === nextSlotId, // isNext seulement pour aujourd'hui
       }));
 
       setTimeSlots(mappedSlots);
     } catch (error) {
       console.error("Error fetching time slots:", error);
-      setTimeSlots([]); // Reset time slots if an error occurs
+      setTimeSlots([]); // Réinitialiser les créneaux si une erreur se produit
     }
   };
 
@@ -132,6 +148,7 @@ function ReservationDetails() {
 
   const handleDateChange = (e) => {
     const selectedDate = new Date(e.target.value);
+    if (isNaN(selectedDate)) return; // Vérifie que la date est valide
     if (selectedDate >= new Date().setHours(0, 0, 0, 0)) {
       setCurrentDate(selectedDate);
     }
@@ -144,7 +161,7 @@ function ReservationDetails() {
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
-    setFormData({ name: "", email: "", phone: "", countryCode: "+33", people: 1, language: "en" });
+    setFormData({ name: "", email: "", phone: "", countryCode: "+216", people: 1, language: "en" });
   };
 
   const handleFormChange = (e) => {
@@ -187,8 +204,8 @@ function ReservationDetails() {
       setTimeout(() => setSuccessMessage(""), 3000);
       setIsPopupOpen(false);
     } catch (error) {
-      console.error("Error creating reservation:", error.message);
-      setErrorMessage(error.message);
+      console.error("Error creating reservation:", error.response?.data?.message || error.message);
+      setErrorMessage(error.response?.data?.message || "Erreur lors de la création de la réservation.");
       setTimeout(() => setErrorMessage(""), 3000);
     } finally {
       setIsSubmitting(false);
@@ -234,28 +251,32 @@ function ReservationDetails() {
         <h3 className="availability-title">Disponibilités</h3>
         <div className="availability-list">
           {timeSlots.length === 0 ? (
-            <p className="no-availability">Pas de date disponible</p>
+            <p className="no-availability">Pas de créneaux disponibles</p>
           ) : (
-            timeSlots.map((slot) => (
-              slot.isNext ? (
-                <a
-                  key={slot._id}
-                  href={formatPhoneNumber("+21625499810")} // Replace with your desired phone number
-                  className="time-slot phone-slot"
-                >
-                  <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
-                </a>
-              ) : (
-                <button
-                  key={slot._id}
-                  className={`time-slot ${slot.status}`} // Dynamically add class based on status
-                  onClick={() => handleReserveClick(slot)}
-                  disabled={slot.status !== "available"} // Only allow clicks for "available" slots
-                >
-                  {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                </button>
-              )
-            ))
+            timeSlots.map((slot) => {
+              if (isToday(currentDate) && slot.isNext) {
+                return (
+                  <a
+                    key={slot._id}
+                    href={`tel:${slot.phoneNumber || "+21625499810"}`} // Remplacez par votre numéro de téléphone ou utilisez une propriété dynamique
+                    className="time-slot phone-slot"
+                  >
+                    <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
+                  </a>
+                );
+              } else {
+                return (
+                  <button
+                    key={slot._id}
+                    className={`time-slot ${slot.status}`} // Dynamically add class based on status
+                    onClick={() => handleReserveClick(slot)}
+                    disabled={slot.status !== "available"} // Only allow clicks for "available" slots
+                  >
+                    {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                  </button>
+                );
+              }
+            })
           )}
         </div>
       </div>

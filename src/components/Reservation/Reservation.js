@@ -7,7 +7,7 @@ import {
   createReservation,
 } from "../../services/reservationService";
 import "./Reservation.css";
-import { FaPhoneAlt } from "react-icons/fa"; // Import the phone icon
+import { FaPhoneAlt } from "react-icons/fa"; // Import de l'icône téléphone
 import ButtonLoader from "../button/ButtonLoader";
 import countryCodes from "../../data/countryCodes.json";
 
@@ -31,6 +31,16 @@ const Reservation = () => {
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
+  // Fonction pour vérifier si une date est aujourd'hui
+  const isToday = (date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
   // Fetch chapters on mount
   useEffect(() => {
     const loadChapters = async () => {
@@ -51,6 +61,8 @@ const Reservation = () => {
     const formattedDate = date.toISOString().split("T")[0];
     const slots = {};
 
+    const today = isToday(date);
+
     for (const chapter of chapters) {
       try {
         const chapterTimeSlots = await fetchTimeSlots(chapter._id, formattedDate);
@@ -58,23 +70,27 @@ const Reservation = () => {
         const now = new Date();
         const filteredSlots = chapterTimeSlots.filter((slot) => {
           const slotTime = new Date(slot.startTime);
-          return date.toDateString() !== now.toDateString() || slotTime >= now;
+          return today ? slotTime >= now : true; // Si aujourd'hui, filtrer les slots passés
         });
 
-        // Sort slots by start time
+        // Trier les créneaux par heure de début
         filteredSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
-        // Identify the next immediate slot (n+1)
-        const nextSlot = filteredSlots.find((slot) => {
-          const slotTime = new Date(slot.startTime);
-          const diffInHours = (slotTime - now) / (1000 * 60 * 60);
-          return diffInHours >= 0;
-        });
+        let nextSlotId = null;
 
-        // Map slots and mark the next slot
+        if (today) {
+          // Identifier le prochain créneau disponible pour aujourd'hui
+          const nextSlot = filteredSlots.find((slot) => {
+            const slotTime = new Date(slot.startTime);
+            return slotTime >= now;
+          });
+          nextSlotId = nextSlot ? nextSlot._id : null;
+        }
+
+        // Mapper les créneaux et marquer le prochain créneau uniquement pour aujourd'hui
         slots[chapter._id] = filteredSlots.map((slot) => ({
           ...slot,
-          isNext: nextSlot ? slot._id === nextSlot._id : false,
+          isNext: today && slot._id === nextSlotId, // isNext seulement pour aujourd'hui
         }));
       } catch (error) {
         console.error(`Error fetching slots for chapter ${chapter._id}:`, error);
@@ -104,6 +120,7 @@ const Reservation = () => {
   // Select a specific date
   const handleDateSelect = (e) => {
     const selectedDate = new Date(e.target.value);
+    if (isNaN(selectedDate)) return; // Vérifie que la date est valide
     if (selectedDate >= new Date().setHours(0, 0, 0, 0)) {
       setCurrentDate(selectedDate);
     }
@@ -172,8 +189,8 @@ const Reservation = () => {
       // Refresh time slots
       await loadTimeSlotsForDate(currentDate);
     } catch (error) {
-      console.error("Error creating reservation:", error.message);
-      setErrorMessage(error.message); // Display backend error message
+      console.error("Error creating reservation:", error.response?.data?.message || error.message);
+      setErrorMessage(error.response?.data?.message || "Erreur lors de la création de la réservation."); // Display backend error message
       setTimeout(() => {
         setErrorMessage("");
       }, 5000); // Clear error after 5 seconds
@@ -261,28 +278,32 @@ const Reservation = () => {
             </p>
             <div className="times">
               {timeSlots[chapter._id]?.length > 0 ? (
-                timeSlots[chapter._id].map((slot) => (
-                  slot.isNext ? (
-                    <a
-                      key={slot._id}
-                      href={formatPhoneNumber("+21625499810")} // Replace with your desired phone number
-                      className="time-slot phone-slot"
-                    >
-                      <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
-                    </a>
-                  ) : (
-                    <button
-                      key={slot._id}
-                      className={`time-slot ${slot.status}`}
-                      onClick={() => handleOpenPopup(chapter, slot)}
-                      disabled={slot.status !== "available"}
-                    >
-                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-                    </button>
-                  )
-                ))
+                timeSlots[chapter._id].map((slot) => {
+                  if (isToday(currentDate) && slot.isNext) {
+                    return (
+                      <a
+                        key={slot._id}
+                        href={`tel:${slot.phoneNumber || "+21612345678"}`} // Remplacez par votre numéro de téléphone ou utilisez une propriété dynamique
+                        className="time-slot phone-slot"
+                      >
+                        <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
+                      </a>
+                    );
+                  } else {
+                    return (
+                      <button
+                        key={slot._id}
+                        className={`time-slot ${slot.status}`}
+                        onClick={() => handleOpenPopup(chapter, slot)}
+                        disabled={slot.status !== "available"}
+                      >
+                        {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                      </button>
+                    );
+                  }
+                })
               ) : (
-                <p className="coming-soon">Pas de date disponible</p>
+                <p className="coming-soon">Pas de créneaux disponibles</p>
               )}
             </div>
           </div>
