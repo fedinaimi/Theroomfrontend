@@ -553,3 +553,28 @@
 .legend-color.unavailable {
   background-color: gray;
 }
+.phone-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #28a745; /* Green color for phone slots */
+  color: white;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+.phone-slot .phone-icon {
+  margin-right: 5px;
+  font-size: 0.8rem; /* Adjust the icon size to be smaller */
+}
+.phone-slot {
+  font-size: 0.7rem;
+  padding: 6px 8px;
+}
+.phone-slot {
+  font-size: 0.6rem;
+  padding: 5px 6px;
+}

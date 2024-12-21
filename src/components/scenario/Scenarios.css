@@ -377,3 +377,58 @@
 .cta-button:hover {
   background-color: #e2501f;
 }
+/* Mobile Scenarios */
+.mobile-scenarios {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory; /* Enables snapping behavior */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+}
+
+.mobile-video-section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: start; /* Snap section to the viewport */
+  position: relative;
+}
+
+/* Video Styling */
+.mobile-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mobile Overlay */
+.mobile-video-overlay {
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  color: white;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.mobile-video-overlay h2 {
+  font-size: 1.5rem;
+}
+
+.mobile-video-overlay p {
+  font-size: 1rem;
+  margin: 10px 0;
+}
+
+/* Button Styling */
+.cta-button {
+  background-color: #f26422;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #d1551e;
+}

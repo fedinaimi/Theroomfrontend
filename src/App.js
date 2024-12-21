@@ -10,10 +10,9 @@ import ContactUs from "./components/ContactUs/ContactUs";
 import Footer from "./components/Footer/Footer";
 import ScenarioDetails from "./components/ScenarioDetails/ScenarioDetails";
 import ReservationDetails from "./components/ReservationDetails/ReservationDetails";
-import "./App.css";
 import SplashScreen from "./components/Splash/SplashScreen";
+import "./App.css";
 
-// Smooth scrolling logic
 const ScrollToHash = () => {
   const location = useLocation();
 
@@ -24,9 +23,6 @@ const ScrollToHash = () => {
         const element = document.querySelector(hash);
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          // Fallback if element is not found
-          console.error(`Element with id ${hash} not found.`);
         }
       }, 300);
     }
@@ -35,22 +31,39 @@ const ScrollToHash = () => {
   return null;
 };
 
-
 function App() {
   const [showSplash, setShowSplash] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
+  const [showHero, setShowHero] = useState(isMobile); // Always show Hero on mobile reload
 
-  // Hide splash screen after video ends or timeout
+  // Handle splash screen
   const handleSplashFinish = () => {
     setShowSplash(false);
   };
 
+  // Handle resizing
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 992);
+    window.addEventListener("resize", handleResize);
+
     const timeout = setTimeout(() => {
       setShowSplash(false);
     }, 5000); // Fallback timeout in case video fails
 
-    return () => clearTimeout(timeout);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timeout);
+    };
   }, []);
+
+  const handleHeroNavigation = () => {
+    setShowHero(false);
+
+    const section = document.getElementById("scenarios-section");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <Router>
@@ -64,28 +77,52 @@ function App() {
             <Route
               path="/"
               element={
-                <>
-                  <div id="accueil">
-                    <Hero />
-                  </div>
-                  <div id="scenarios-section">
-                    <Scenarios />
-                  </div>
-                 
-                  <div id="teambuilding">
-                    <TeamBuilding />
-                  </div>
-                  <div id="reservation">
-                    <Reservation />
-                  </div>
-                  <div id="apropos">
-                    <About />
-                  </div>
-                  <div id="contact">
-                    <ContactUs />
-                  </div>
-                  <Footer />
-                </>
+                isMobile ? (
+                  showHero ? (
+                    <Hero onArrowClick={handleHeroNavigation} />
+                  ) : (
+                    <>
+                      <div id="scenarios-section">
+                        <Scenarios />
+                      </div>
+                      <div id="teambuilding">
+                        <TeamBuilding />
+                      </div>
+                      <div id="reservation">
+                        <Reservation />
+                      </div>
+                      <div id="apropos">
+                        <About />
+                      </div>
+                      <div id="contact">
+                        <ContactUs />
+                      </div>
+                      <Footer />
+                    </>
+                  )
+                ) : (
+                  <>
+                    <div id="accueil">
+                      <Hero />
+                    </div>
+                    <div id="scenarios-section">
+                      <Scenarios />
+                    </div>
+                    <div id="teambuilding">
+                      <TeamBuilding />
+                    </div>
+                    <div id="reservation">
+                      <Reservation />
+                    </div>
+                    <div id="apropos">
+                      <About />
+                    </div>
+                    <div id="contact">
+                      <ContactUs />
+                    </div>
+                    <Footer />
+                  </>
+                )
               }
             />
             <Route path="/scenarios/:id" element={<ScenarioDetails />} />

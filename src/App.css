@@ -46,3 +46,11 @@
   opacity: 1;
   transform: translateY(0);
 }
+.next-section {
+  min-height: 100vh;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
