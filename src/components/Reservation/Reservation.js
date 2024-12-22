@@ -144,6 +144,8 @@ const Reservation = () => {
       people: 1,
       language: "en",
     });
+    setErrors({});
+    setErrorMessage("");
   };
 
   // Handle form input changes
@@ -189,8 +191,13 @@ const Reservation = () => {
       // Refresh time slots
       await loadTimeSlotsForDate(currentDate);
     } catch (error) {
-      console.error("Error creating reservation:", error.response?.data?.message || error.message);
-      setErrorMessage(error.response?.data?.message || "Erreur lors de la création de la réservation."); // Display backend error message
+      console.error(
+        "Error creating reservation:",
+        error.message || error
+      );
+      setErrorMessage(
+        error.message || "Erreur lors de la création de la réservation."
+      ); // Display backend error message
       setTimeout(() => {
         setErrorMessage("");
       }, 5000); // Clear error after 5 seconds
@@ -283,7 +290,7 @@ const Reservation = () => {
                     return (
                       <a
                         key={slot._id}
-                        href={`tel:${slot.phoneNumber || "+21612345678"}`} // Remplacez par votre numéro de téléphone ou utilisez une propriété dynamique
+                        href={`tel:${slot.phoneNumber || "+21625499810"}`} // Remplacez par votre numéro de téléphone ou utilisez une propriété dynamique
                         className="time-slot phone-slot"
                       >
                         <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
