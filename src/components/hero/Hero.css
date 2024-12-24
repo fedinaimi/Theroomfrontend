@@ -1,14 +1,17 @@
+/* src/components/Hero/Hero.css */
+
 /* Hero section */
 .hero {
-    position: relative; /* Ensures other elements like cards stack properly */
-    min-height: 100vh; /* Full height of the viewport */
-    padding: 300px 20px;
-    color: white;
-    text-align: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url("../../assets/background.png");
-    background-size: cover; /* Ensures the background covers the whole section */
-    background-position: center; /* Centers the background image */
-    background-attachment: fixed; /* Makes the background image fixed during scrolling */
+  position: relative; /* Ensures other elements like cards stack properly */
+  min-height: 100vh; /* Full height of the viewport */
+  padding: 300px 20px;
+  color: white;
+  text-align: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)),
+    url("../../assets/background.png");
+  background-size: cover; /* Ensures the background covers the whole section */
+  background-position: center; /* Centers the background image */
+  background-attachment: fixed; /* Makes the background image fixed during scrolling */
 }
 
 /* Floating logo animation */
@@ -22,12 +25,13 @@
 
 .floating-logo img {
   width: 600px; /* Adjust size as needed */
-  margin-bottom:150px; /* Adds spacing between the logo and arrow */
+  margin-bottom: 150px; /* Adds spacing between the logo and arrows */
 }
 
 /* Floating animation */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(-10px);
   }
   50% {
@@ -35,37 +39,40 @@
   }
 }
 
-/* Scroll arrow near logo */
+/* Scroll arrows container */
 .scroll-arrow {
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 20px; /* Space between arrows and "Cliquer ici" */
 }
 
-.scroll-arrow span {
-  display: block;
+/* Individual arrow styling */
+.scroll-arrow .arrow {
   width: 15px;
   height: 15px;
   border-bottom: 2px solid #f26422;
   border-right: 2px solid #f26422;
   transform: rotate(45deg);
-  margin: -3px;
+  margin: 5px 0;
   animation: scroll 1.5s infinite;
 }
 
-.scroll-arrow span:nth-child(1) {
+/* Staggered animation delays for arrows */
+.scroll-arrow .arrow:nth-child(1) {
   animation-delay: 0s;
 }
 
-.scroll-arrow span:nth-child(2) {
+.scroll-arrow .arrow:nth-child(2) {
   animation-delay: 0.2s;
 }
 
-.scroll-arrow span:nth-child(3) {
+.scroll-arrow .arrow:nth-child(3) {
   animation-delay: 0.4s;
 }
 
+/* Scroll animation */
 @keyframes scroll {
   0% {
     opacity: 0;
@@ -73,9 +80,76 @@
   }
   50% {
     opacity: 1;
+    transform: rotate(45deg) translate(0px, 0px);
   }
   100% {
     opacity: 0;
     transform: rotate(45deg) translate(8px, 8px);
+  }
+}
+
+/* "Cliquer ici" Button Styling */
+.click-here-button {
+  display: none; /* Hidden by default */
+  background-color: #f26422;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0.8;
+  animation: float-button 3s ease-in-out infinite;
+}
+
+.click-here-button:hover {
+  background-color: #d95319;
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+/* Floating animation for the button */
+@keyframes float-button {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Show "Cliquer ici" button only on mobile devices */
+@media (max-width: 767px) {
+  .click-here-button {
+    display: inline-block;
+    margin-top: 10px;
+  }
+
+  .floating-logo img {
+    width: 300px; /* Adjust logo size for mobile */
+    margin-bottom: 100px; /* Adjust spacing for mobile */
+  }
+
+  .scroll-arrow {
+    margin-bottom: 10px; /* Adjust spacing for mobile */
+  }
+}
+
+/* Adjust padding for smaller screens */
+@media (max-width: 480px) {
+  .hero {
+    padding: 200px 10px;
+  }
+
+  .click-here-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .scroll-arrow .arrow {
+    width: 12px;
+    height: 12px;
   }
 }

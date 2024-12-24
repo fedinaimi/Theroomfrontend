@@ -212,8 +212,48 @@
 
 .success-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #28a745, #f26422, #dc3545);
+  background: linear-gradient(90deg, #dc3545, #f26422, #28a745);
   width: 0;
   transition: width 1.5s ease-out;
   border-radius: 10px;
+} 
+.price-badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* Affordable */
+.price-badge.affordable {
+  background-color: #28a745; /* Green */
+}
+
+/* Moderate */
+.price-badge.moderate {
+  background-color: #ffc107; /* Amber */
+}
+
+/* Premium */
+.price-badge.premium {
+  background-color: #dc3545; /* Red */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .price-badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .price-badge {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
 }

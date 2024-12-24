@@ -7,7 +7,7 @@ import {
   createReservation,
 } from "../../services/reservationService";
 import "./Reservation.css";
-import { FaPhoneAlt } from "react-icons/fa"; // Import de l'icône téléphone
+import { FaPhoneAlt } from "react-icons/fa"; // Import phone icon
 import ButtonLoader from "../button/ButtonLoader";
 import countryCodes from "../../data/countryCodes.json";
 
@@ -31,7 +31,7 @@ const Reservation = () => {
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Fonction pour vérifier si une date est aujourd'hui
+  // Function to check if a date is today
   const isToday = (date) => {
     const today = new Date();
     return (
@@ -70,16 +70,16 @@ const Reservation = () => {
         const now = new Date();
         const filteredSlots = chapterTimeSlots.filter((slot) => {
           const slotTime = new Date(slot.startTime);
-          return today ? slotTime >= now : true; // Si aujourd'hui, filtrer les slots passés
+          return today ? slotTime >= now : true; // If today, filter past slots
         });
 
-        // Trier les créneaux par heure de début
+        // Sort slots by start time
         filteredSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
         let nextSlotId = null;
 
         if (today) {
-          // Identifier le prochain créneau disponible pour aujourd'hui
+          // Identify the next available slot for today
           const nextSlot = filteredSlots.find((slot) => {
             const slotTime = new Date(slot.startTime);
             return slotTime >= now;
@@ -87,10 +87,10 @@ const Reservation = () => {
           nextSlotId = nextSlot ? nextSlot._id : null;
         }
 
-        // Mapper les créneaux et marquer le prochain créneau uniquement pour aujourd'hui
+        // Map slots and mark the next slot only for today
         slots[chapter._id] = filteredSlots.map((slot) => ({
           ...slot,
-          isNext: today && slot._id === nextSlotId, // isNext seulement pour aujourd'hui
+          isNext: today && slot._id === nextSlotId, // isNext only for today
         }));
       } catch (error) {
         console.error(`Error fetching slots for chapter ${chapter._id}:`, error);
@@ -120,7 +120,7 @@ const Reservation = () => {
   // Select a specific date
   const handleDateSelect = (e) => {
     const selectedDate = new Date(e.target.value);
-    if (isNaN(selectedDate)) return; // Vérifie que la date est valide
+    if (isNaN(selectedDate)) return; // Check if the date is valid
     if (selectedDate >= new Date().setHours(0, 0, 0, 0)) {
       setCurrentDate(selectedDate);
     }
@@ -184,9 +184,7 @@ const Reservation = () => {
 
       setIsPopupOpen(false);
       setIsSuccessMessageVisible(true);
-      setTimeout(() => {
-        setIsSuccessMessageVisible(false);
-      }, 3000);
+      // Removed setTimeout to prevent auto-dismissal
 
       // Refresh time slots
       await loadTimeSlotsForDate(currentDate);
@@ -198,9 +196,7 @@ const Reservation = () => {
       setErrorMessage(
         error.message || "Erreur lors de la création de la réservation."
       ); // Display backend error message
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 5000); // Clear error after 5 seconds
+      // Removed setTimeout to prevent auto-dismissal
     } finally {
       setIsLoading(false);
     }
@@ -215,10 +211,10 @@ const Reservation = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Adresse email invalide.";
     }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Le numéro de téléphone est requis.";
-    } else if (!/^\d+$/.test(formData.phone)) {
-      newErrors.phone = "Le numéro de téléphone doit contenir uniquement des chiffres.";
+    if (formData.phone.length !== 8) {
+      newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
+    } else if (!/^[9254]/.test(formData.phone)) {
+      newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
     }
 
     // Validate number of players
@@ -255,6 +251,15 @@ const Reservation = () => {
   // Format phone number for tel link
   const formatPhoneNumber = (phone) => `tel:${phone}`;
 
+  // Handlers to dismiss messages
+  const handleDismissSuccess = () => {
+    setIsSuccessMessageVisible(false);
+  };
+
+  const handleDismissError = () => {
+    setErrorMessage("");
+  };
+
   return (
     <div className="reservation-container">
       <h1>Réservation</h1>
@@ -290,7 +295,7 @@ const Reservation = () => {
                     return (
                       <a
                         key={slot._id}
-                        href={`tel:${slot.phoneNumber || "+21625499810"}`} // Remplacez par votre numéro de téléphone ou utilisez une propriété dynamique
+                        href={`tel:${slot.phoneNumber || "+21625499810"}`} // Replace with your phone number or use a dynamic property
                         className="time-slot phone-slot"
                       >
                         <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
@@ -417,6 +422,9 @@ const Reservation = () => {
           <p className="success-message-text">
             Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
           </p>
+          <button className="ok-button" onClick={handleDismissSuccess}>
+            OK
+          </button>
         </div>
       )}
 
@@ -424,6 +432,9 @@ const Reservation = () => {
       {errorMessage && (
         <div className="error-message-container">
           <p className="error-message-text">{errorMessage}</p>
+          <button className="ok-button" onClick={handleDismissError}>
+            OK
+          </button>
         </div>
       )}
 

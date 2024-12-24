@@ -1,3 +1,5 @@
+// src/pages/ScenarioDetails.js
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ScenarioDetails.css";
@@ -22,8 +24,8 @@ function ScenarioDetails() {
         const fetchedChapter = await getChapterById(id);
         setChapter(fetchedChapter);
 
-        // Simulate success percentage based on fetched data (placeholder logic)
-        setSuccessPercentage(fetchedChapter.successRate || 75); // Use `successRate` or fallback to 75%
+        // Set success percentage based on fetched data
+        setSuccessPercentage(fetchedChapter.percentageOfSuccess || 75); // Use `percentageOfSuccess` or fallback to 75%
       } catch (err) {
         console.error("Error fetching chapter:", err);
         setError("Failed to load chapter details.");
@@ -51,6 +53,13 @@ function ScenarioDetails() {
   const difficulty = chapter?.difficulty || "unknown";
   const difficultyColor =
     difficulty === "easy" ? "green" : difficulty === "medium" ? "orange" : difficulty === "hard" ? "red" : "gray";
+
+  // Function to determine price category
+  const getPriceCategory = (price) => {
+    if (price <= 50) return 'affordable';
+    if (price <= 100) return 'moderate';
+    return 'premium';
+  };
 
   return (
     <div className="cannibal-container_big">
@@ -86,6 +95,14 @@ function ScenarioDetails() {
               </li>
             )}
           </ul>
+
+          {/* Price Badge */}
+          <div className="price-badge-container my-4">
+            <span className={`price-badge ${getPriceCategory(chapter.price)}`}>
+              {chapter.price} TND
+            </span>
+          </div>
+
           <div className="success-bar-container">
             <p className="success-text">
               <strong>Success Rate:</strong> {chapter.percentageOfSuccess}%

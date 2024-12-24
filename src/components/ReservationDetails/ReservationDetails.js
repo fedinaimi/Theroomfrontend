@@ -8,7 +8,7 @@ import {
   createReservation,
 } from "../../services/reservationService";
 import "./ReservationDetails.css";
-import { FaPhoneAlt } from "react-icons/fa"; // Import de l'icône téléphone
+import { FaPhoneAlt } from "react-icons/fa"; // Import phone icon
 import ButtonLoader from "../button/ButtonLoader";
 import countryCodes from "../../data/countryCodes.json";
 
@@ -16,6 +16,9 @@ function ReservationDetails() {
   const { id } = useParams();
   const { state } = useLocation();
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccessMessageVisible, setIsSuccessMessageVisible] = useState(false);
+  const [isErrorMessageVisible, setIsErrorMessageVisible] = useState(false);
 
   const [chapter, setChapter] = useState(state?.chapter || null);
   const [timeSlots, setTimeSlots] = useState([]);
@@ -31,10 +34,9 @@ function ReservationDetails() {
     language: "fr",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
   const [errors, setErrors] = useState({});
 
-  // Fonction pour vérifier si une date est aujourd'hui
+  // Function to check if a date is today
   const isToday = (date) => {
     const today = new Date();
     return (
@@ -53,10 +55,10 @@ function ReservationDetails() {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Adresse email invalide.";
     }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Le numéro de téléphone est requis.";
-    } else if (!/^\d+$/.test(formData.phone)) {
-      newErrors.phone = "Le numéro de téléphone doit contenir uniquement des chiffres.";
+    if (formData.phone.length !== 8) {
+      newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
+    } else if (!/^[9254]/.test(formData.phone)) {
+      newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
     }
     if (chapter) {
       const { minPlayerNumber, maxPlayerNumber } = chapter;
@@ -80,6 +82,8 @@ function ReservationDetails() {
         await loadTimeSlots(currentDate); // Load time slots for the current date
       } catch (error) {
         console.error("Error fetching data:", error);
+        setErrorMessage("Erreur lors du chargement des détails de la réservation.");
+        setIsErrorMessageVisible(true);
       }
     };
     fetchData();
@@ -102,16 +106,16 @@ function ReservationDetails() {
 
       const filteredTimeSlots = fetchedTimeSlots.filter((slot) => {
         const slotTime = new Date(slot.startTime);
-        return today ? slotTime >= now : true; // Si aujourd'hui, filtrer les slots passés
+        return today ? slotTime >= now : true; // If today, filter past slots
       });
 
-      // Trier les créneaux par heure de début
+      // Sort slots by start time
       filteredTimeSlots.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
 
       let nextSlotId = null;
 
       if (today) {
-        // Identifier le prochain créneau disponible pour aujourd'hui
+        // Identify the next available slot for today
         const nextSlot = filteredTimeSlots.find((slot) => {
           const slotTime = new Date(slot.startTime);
           return slotTime >= now;
@@ -119,23 +123,27 @@ function ReservationDetails() {
         nextSlotId = nextSlot ? nextSlot._id : null;
       }
 
-      // Mapper les créneaux et marquer le prochain créneau uniquement pour aujourd'hui
+      // Map slots and mark the next slot only for today
       const mappedSlots = filteredTimeSlots.map((slot) => ({
         ...slot,
-        isNext: today && slot._id === nextSlotId, // isNext seulement pour aujourd'hui
+        isNext: today && slot._id === nextSlotId, // isNext only for today
       }));
 
       setTimeSlots(mappedSlots);
     } catch (error) {
       console.error("Error fetching time slots:", error);
-      setTimeSlots([]); // Réinitialiser les créneaux si une erreur se produit
+      setTimeSlots([]); // Reset slots if an error occurs
+      setErrorMessage("Erreur lors du chargement des créneaux horaires.");
+      setIsErrorMessageVisible(true);
     }
   };
 
   const handlePrevDate = () => {
     const prevDate = new Date(currentDate);
     prevDate.setDate(currentDate.getDate() - 1);
-    if (prevDate >= new Date().setHours(0, 0, 0, 0)) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (prevDate >= today) {
       setCurrentDate(prevDate);
     }
   };
@@ -148,8 +156,10 @@ function ReservationDetails() {
 
   const handleDateChange = (e) => {
     const selectedDate = new Date(e.target.value);
-    if (isNaN(selectedDate)) return; // Vérifie que la date est valide
-    if (selectedDate >= new Date().setHours(0, 0, 0, 0)) {
+    if (isNaN(selectedDate)) return; // Check if the date is valid
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (selectedDate >= today) {
       setCurrentDate(selectedDate);
     }
   };
@@ -162,6 +172,9 @@ function ReservationDetails() {
   const handleClosePopup = () => {
     setIsPopupOpen(false);
     setFormData({ name: "", email: "", phone: "", countryCode: "+216", people: 1, language: "en" });
+    setErrors({});
+    setErrorMessage("");
+    setIsErrorMessageVisible(false);
   };
 
   const handleFormChange = (e) => {
@@ -175,6 +188,7 @@ function ReservationDetails() {
     setIsSubmitting(true);
     setErrors({});
     setErrorMessage("");
+    setSuccessMessage("");
 
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -201,12 +215,20 @@ function ReservationDetails() {
       await loadTimeSlots(currentDate);
 
       setSuccessMessage("Votre réservation est en cours de traitement. Attendez notre confirmation.");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      setIsSuccessMessageVisible(true);
       setIsPopupOpen(false);
     } catch (error) {
-      console.error("Error creating reservation:", error.response?.data?.message || error.message);
-      setErrorMessage(error.response?.data?.message || "Erreur lors de la création de la réservation.");
-      setTimeout(() => setErrorMessage(""), 3000);
+      console.error("Error creating reservation:", error.response || error);
+      
+      // Adjust this based on your actual error response structure
+      const backendMessage =
+        error.response?.data?.message || // If the message is in error.response.data.message
+        error.response?.data || // If the message is directly in error.response.data
+        error.message || // Fallback to error.message
+        "Erreur lors de la création de la réservation.";
+
+      setErrorMessage(backendMessage);
+      setIsErrorMessageVisible(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -224,6 +246,15 @@ function ReservationDetails() {
     });
 
   const formatPhoneNumber = (phone) => `tel:${phone}`;
+
+  // Handlers to dismiss messages
+  const handleDismissSuccess = () => {
+    setIsSuccessMessageVisible(false);
+  };
+
+  const handleDismissError = () => {
+    setIsErrorMessageVisible(false);
+  };
 
   return (
     <div className="reservation-container">
@@ -258,7 +289,7 @@ function ReservationDetails() {
                 return (
                   <a
                     key={slot._id}
-                    href={`tel:${slot.phoneNumber || "+21625499810"}`} // Remplacez par votre numéro de téléphone ou utilisez une propriété dynamique
+                    href={`tel:${slot.phoneNumber || "+21625499810"}`} // Replace with your phone number or use a dynamic property
                     className="time-slot phone-slot"
                   >
                     <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
@@ -384,18 +415,24 @@ function ReservationDetails() {
       )}
 
       {/* Success Message */}
-      {successMessage && (
+      {isSuccessMessageVisible && (
         <div className="success-message">
           <p className="success-message-text">
-            Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
+            {successMessage}
           </p>
+          <button className="ok-button" onClick={handleDismissSuccess}>
+            OK
+          </button>
         </div>
       )}
 
       {/* Error Message */}
-      {errorMessage && (
+      {isErrorMessageVisible && (
         <div className="error-message-container">
           <p className="error-message-text">{errorMessage}</p>
+          <button className="ok-button" onClick={handleDismissError}>
+            OK
+          </button>
         </div>
       )}
 

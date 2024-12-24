@@ -3,23 +3,24 @@
 import React from "react";
 import "./Hero.css";
 import logo from "../../assets/logoEscapeF.png";
-import { FaArrowDown } from "react-icons/fa"; // Import de l'icône flèche vers le bas
 
 function Hero({ onArrowClick }) {
   return (
     <div className="hero">
       <div className="floating-logo">
         <img src={logo} alt="The Room Escape Game" />
-        <div className="scroll-arrow" onClick={onArrowClick}>
-          <span></span>
-          <span></span>
-          <span></span>
+
+        {/* Scroll Arrows */}
+        <div className="scroll-arrow" onClick={onArrowClick} aria-label="Scroll Down">
+          <span className="arrow"></span>
+          <span className="arrow"></span>
+          <span className="arrow"></span>
         </div>
-        {/* Nouvel Icône Cliquer Ici */}
-        <div className="click-here-container" onClick={onArrowClick}>
-         
-          <span className="click-here-text">Cliquer ici</span>
-        </div>
+
+        {/* "Cliquer ici" Button */}
+        <button className="click-here-button" onClick={onArrowClick} aria-label="Click Here">
+          Cliquer ici
+        </button>
       </div>
     </div>
   );
