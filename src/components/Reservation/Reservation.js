@@ -232,6 +232,12 @@ const Reservation = () => {
     return newErrors;
   };
 
+  // Function to determine price category
+  const getPriceCategory = (price) => {
+    if (price <= 50) return 'affordable';
+    if (price <= 100) return 'moderate';
+    return 'premium';
+  };
   // Format date for display
   const formatDate = (date) =>
     date.toLocaleDateString("fr-FR", {
@@ -287,7 +293,14 @@ const Reservation = () => {
             <h3>{chapter.name}</h3>
             <p>
               Joueurs: min {chapter.minPlayerNumber} - max {chapter.maxPlayerNumber || "N/A"}
+
             </p>
+            <div className="price-badge-container">
+    <span className={`price-badge ${getPriceCategory(chapter.price)}`} data-tooltip={`Prix par personne: ${chapter.price} TND`}>
+      {chapter.price} TND
+    </span>
+    <span className="price-label"> par personne</span>
+  </div>
             <div className="times">
               {timeSlots[chapter._id]?.length > 0 ? (
                 timeSlots[chapter._id].map((slot) => {

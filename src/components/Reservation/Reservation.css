@@ -481,3 +481,47 @@
   font-size: 0.6rem;
   padding: 5px 6px;
 }
+.price-badge-container {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between badge and label */
+  margin-bottom: 15px; /* Space between price and buttons */
+}
+
+/* Optional: Aligning Price Label */
+.price-label {
+  font-size: 0.9rem;
+  color: #f26422; /* Optional: Highlight the label */
+}
+
+/* Ensure `.times` has adequate spacing from above */
+.times {
+  /* Existing styles */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  
+  /* Optional: Additional top margin if needed */
+  /* margin-top: 10px; */
+}
+
+/* Responsive Adjustments for Price Badge Container */
+@media (max-width: 768px) {
+  .price-badge-container {
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .price-badge-container {
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+
+  .price-label {
+    font-size: 0.8rem;
+  }
+}

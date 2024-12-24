@@ -99,7 +99,7 @@ function ScenarioDetails() {
           {/* Price Badge */}
           <div className="price-badge-container my-4">
             <span className={`price-badge ${getPriceCategory(chapter.price)}`}>
-              {chapter.price} TND
+              {chapter.price} TND par personne
             </span>
           </div>
 
