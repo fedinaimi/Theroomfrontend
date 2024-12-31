@@ -257,3 +257,12 @@
     padding: 3px 6px;
   }
 }
+.location-link {
+  color: #f26422;
+  text-decoration: underline;
+  font-weight: bold;
+}
+.location-link:hover {
+  text-decoration: none;
+  color: #f2f2f2; /* or another hover color */
+}

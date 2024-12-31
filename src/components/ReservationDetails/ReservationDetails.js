@@ -1,5 +1,3 @@
-// src/components/ReservationDetails/ReservationDetails.js
-
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import {
@@ -30,11 +28,16 @@ function ReservationDetails() {
     email: "",
     phone: "",
     countryCode: "+216",
-    people: 1,
+    people: "",
     language: "fr",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
+  const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://192.168.1.43:5000';
+  const imageURL = `${baseURL.replace(/\/+$/, '')}/${chapter.image.replace(/^\/+/, '')}`;
+  const videoURL = `${baseURL.replace(/\/+$/, '')}/${chapter.video.replace(/^\/+/, '')}`;
+  // More robust email pattern:
+  const emailRegex = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/i;
 
   // Function to check if a date is today
   const isToday = (date) => {
@@ -49,25 +52,40 @@ function ReservationDetails() {
   // Form validation
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Le nom est requis.";
+
+    // Name
+    if (!formData.name.trim()) {
+      newErrors.name = "Le nom est requis.";
+    }
+
+    // Email
     if (!formData.email.trim()) {
       newErrors.email = "L'adresse email est requise.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!emailRegex.test(formData.email)) {
       newErrors.email = "Adresse email invalide.";
     }
+
+    // Phone
     if (formData.phone.length !== 8) {
       newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
     } else if (!/^[9254]/.test(formData.phone)) {
       newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
     }
+
+    // Number of players
     if (chapter) {
       const { minPlayerNumber, maxPlayerNumber } = chapter;
       const playerCount = Number(formData.people);
 
-      if (isNaN(playerCount) || playerCount < minPlayerNumber || playerCount > maxPlayerNumber) {
+      if (
+        isNaN(playerCount) ||
+        playerCount < minPlayerNumber ||
+        playerCount > maxPlayerNumber
+      ) {
         newErrors.people = `Le nombre de joueurs doit être entre ${minPlayerNumber} et ${maxPlayerNumber}.`;
       }
     }
+
     return newErrors;
   };
 
@@ -171,7 +189,14 @@ function ReservationDetails() {
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
-    setFormData({ name: "", email: "", phone: "", countryCode: "+216", people: 1, language: "en" });
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      countryCode: "+216",
+      people: 1,
+      language: "en",
+    });
     setErrors({});
     setErrorMessage("");
     setIsErrorMessageVisible(false);
@@ -219,12 +244,12 @@ function ReservationDetails() {
       setIsPopupOpen(false);
     } catch (error) {
       console.error("Error creating reservation:", error.response || error);
-      
+
       // Adjust this based on your actual error response structure
       const backendMessage =
-        error.response?.data?.message || // If the message is in error.response.data.message
-        error.response?.data || // If the message is directly in error.response.data
-        error.message || // Fallback to error.message
+        error.response?.data?.message || 
+        error.response?.data || 
+        error.message || 
         "Erreur lors de la création de la réservation.";
 
       setErrorMessage(backendMessage);
@@ -235,7 +260,10 @@ function ReservationDetails() {
   };
 
   const formatTime = (time) =>
-    new Date(time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true });
+    new Date(time).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   const formatDisplayDate = (date) =>
     date.toLocaleDateString("fr-FR", {
@@ -258,7 +286,9 @@ function ReservationDetails() {
 
   return (
     <div className="reservation-container">
+     
       <h1 className="reservation-title">{chapter?.name || "Réservation"}</h1>
+
       <div className="calendar-navigation">
         <button className="nav-button" onClick={handlePrevDate}>
           ◀
@@ -273,9 +303,11 @@ function ReservationDetails() {
           ▶
         </button>
       </div>
+
       <div className="reservation-card">
+        {/* Existing chapter image (you could remove this if the new top cover is sufficient) */}
         <img
-          src={chapter?.image || "/placeholder.jpg"}
+          src={imageURL || "/placeholder.jpg"}
           alt={chapter?.name || "Chapter"}
           className="reservation-image"
         />
@@ -289,7 +321,7 @@ function ReservationDetails() {
                 return (
                   <a
                     key={slot._id}
-                    href={`tel:${slot.phoneNumber || "+21625499810"}`} // Replace with your phone number or use a dynamic property
+                    href={`tel:${slot.phoneNumber || "+21625499810"}`}
                     className="time-slot phone-slot"
                   >
                     <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
@@ -299,9 +331,9 @@ function ReservationDetails() {
                 return (
                   <button
                     key={slot._id}
-                    className={`time-slot ${slot.status}`} // Dynamically add class based on status
+                    className={`time-slot ${slot.status}`}
                     onClick={() => handleReserveClick(slot)}
-                    disabled={slot.status !== "available"} // Only allow clicks for "available" slots
+                    disabled={slot.status !== "available"}
                   >
                     {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                   </button>
@@ -315,10 +347,17 @@ function ReservationDetails() {
       {/* Reservation Popup */}
       {isPopupOpen && (
         <div className="popup-overlay">
+          
           <div className="popup">
             <h2 className="popup-title">
               Réserver pour {formatTime(selectedTimeSlot?.startTime) || "N/A"}
             </h2>
+            <div 
+        className="chapter-cover" 
+        style={{
+          backgroundImage: `url(${chapter?.image || '/placeholder.jpg'})`,
+        }}
+      ></div>
             <form onSubmit={handleSubmit} className="popup-form">
               {/* Name Field */}
               <label>Nom:</label>
@@ -380,7 +419,7 @@ function ReservationDetails() {
                 name="people"
                 value={formData.people}
                 onChange={handleFormChange}
-                placeholder="Nombre de participants"
+                placeholder={chapter?.minPlayerNumber || 1}
                 min={chapter?.minPlayerNumber || 1}
                 max={chapter?.maxPlayerNumber || 10}
                 className={errors.people ? "input-error" : ""}

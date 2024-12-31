@@ -1,5 +1,3 @@
-// src/components/Reservation/Reservation.js
-
 import React, { useState, useEffect } from "react";
 import {
   fetchChapters,
@@ -25,11 +23,19 @@ const Reservation = () => {
     email: "",
     phone: "",
     countryCode: "+216",
-    people: 1,
+    people: "",
     language: "fr",
   });
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
+
+  const constructURL = (path) => {
+    if (!path) return "";
+    return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+  };
+  // More robust email pattern:
+  const emailRegex = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/i;
 
   // Function to check if a date is today
   const isToday = (date) => {
@@ -154,6 +160,44 @@ const Reservation = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Form validation
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Le nom est requis.";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "L'adresse email est requise.";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Adresse email invalide.";
+    }
+
+    if (formData.phone.length !== 8) {
+      newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
+    } else if (!/^[9254]/.test(formData.phone)) {
+      newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
+    }
+
+    if (selectedChapter) {
+      const { minPlayerNumber, maxPlayerNumber } = selectedChapter;
+      const playerCount = Number(formData.people);
+
+      if (
+        isNaN(playerCount) ||
+        playerCount < minPlayerNumber ||
+        playerCount > maxPlayerNumber
+      ) {
+        newErrors.people = `Le nombre de joueurs doit être entre ${minPlayerNumber} et ${maxPlayerNumber}.`;
+      }
+    } else {
+      newErrors.people = "Veuillez sélectionner un chapitre.";
+    }
+
+    return newErrors;
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -184,60 +228,26 @@ const Reservation = () => {
 
       setIsPopupOpen(false);
       setIsSuccessMessageVisible(true);
-      // Removed setTimeout to prevent auto-dismissal
 
       // Refresh time slots
       await loadTimeSlotsForDate(currentDate);
     } catch (error) {
-      console.error(
-        "Error creating reservation:",
-        error.message || error
-      );
+      console.error("Error creating reservation:", error.message || error);
       setErrorMessage(
         error.message || "Erreur lors de la création de la réservation."
-      ); // Display backend error message
-      // Removed setTimeout to prevent auto-dismissal
+      ); 
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Form validation
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Le nom est requis.";
-    if (!formData.email.trim()) {
-      newErrors.email = "L'adresse email est requise.";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Adresse email invalide.";
-    }
-    if (formData.phone.length !== 8) {
-      newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
-    } else if (!/^[9254]/.test(formData.phone)) {
-      newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
-    }
-
-    // Validate number of players
-    if (selectedChapter) {
-      const { minPlayerNumber, maxPlayerNumber } = selectedChapter;
-      const playerCount = Number(formData.people);
-
-      if (isNaN(playerCount) || playerCount < minPlayerNumber || playerCount > maxPlayerNumber) {
-        newErrors.people = `Le nombre de joueurs doit être entre ${minPlayerNumber} et ${maxPlayerNumber}.`;
-      }
-    } else {
-      newErrors.people = "Veuillez sélectionner un chapitre.";
-    }
-
-    return newErrors;
-  };
-
   // Function to determine price category
   const getPriceCategory = (price) => {
-    if (price <= 50) return 'affordable';
-    if (price <= 100) return 'moderate';
-    return 'premium';
+    if (price <= 50) return "affordable";
+    if (price <= 100) return "moderate";
+    return "premium";
   };
+
   // Format date for display
   const formatDate = (date) =>
     date.toLocaleDateString("fr-FR", {
@@ -289,18 +299,27 @@ const Reservation = () => {
       <div className="card_rs-container">
         {chapters.map((chapter) => (
           <div className="card_r" key={chapter._id}>
-            <img src={chapter.image} alt={chapter.name} className="room-image" />
+           <img
+  src={constructURL(chapter.image) || "/placeholder.jpg"}
+  alt={chapter.name}
+  className="room-image"
+/>
             <h3>{chapter.name}</h3>
             <p>
-              Joueurs: min {chapter.minPlayerNumber} - max {chapter.maxPlayerNumber || "N/A"}
-
+              Joueurs: min {chapter.minPlayerNumber} - max{" "}
+              {chapter.maxPlayerNumber || "N/A"}
             </p>
+
             <div className="price-badge-container">
-    <span className={`price-badge ${getPriceCategory(chapter.price)}`} data-tooltip={`Prix par personne: ${chapter.price} TND`}>
-      {chapter.price} TND
-    </span>
-    <span className="price-label"> par personne</span>
-  </div>
+              <span
+                className={`price-badge ${getPriceCategory(chapter.price)}`}
+                data-tooltip={`Prix par personne: ${chapter.price} TND`}
+              >
+                {chapter.price} TND
+              </span>
+              <span className="price-label"> par personne</span>
+            </div>
+
             <div className="times">
               {timeSlots[chapter._id]?.length > 0 ? (
                 timeSlots[chapter._id].map((slot) => {
@@ -308,10 +327,11 @@ const Reservation = () => {
                     return (
                       <a
                         key={slot._id}
-                        href={`tel:${slot.phoneNumber || "+21625499810"}`} // Replace with your phone number or use a dynamic property
+                        href={`tel:${slot.phoneNumber || "+21625499810"}`} 
                         className="time-slot phone-slot"
                       >
-                        <FaPhoneAlt className="phone-icon" /> {formatTime(slot.startTime)}
+                        <FaPhoneAlt className="phone-icon" />{" "}
+                        {formatTime(slot.startTime)}
                       </a>
                     );
                   } else {
@@ -340,8 +360,15 @@ const Reservation = () => {
         <div className="popup-overlay">
           <div className="popup">
             <h2 className="popup-title">
-              Réservation pour {selectedChapter?.name} à {formatTime(selectedTimeSlot?.startTime)}
+              Réservation pour {selectedChapter?.name} à{" "}
+              {formatTime(selectedTimeSlot?.startTime)}
             </h2>
+            <div
+  className="chapter-cover"
+  style={{
+    backgroundImage: `url(${constructURL(selectedChapter.image) || "/placeholder.jpg"})`,
+  }}
+></div>
             <form className="popup-form" onSubmit={handleSubmit}>
               <label>Nom:</label>
               <input
@@ -398,7 +425,7 @@ const Reservation = () => {
                 name="people"
                 value={formData.people}
                 onChange={handleFormChange}
-                placeholder="Nombre de participants"
+                placeholder={selectedChapter?.minPlayerNumber }
                 className={errors.people ? "input-error" : ""}
                 min={selectedChapter?.minPlayerNumber || 1}
                 max={selectedChapter?.maxPlayerNumber || 10}
@@ -433,7 +460,9 @@ const Reservation = () => {
       {isSuccessMessageVisible && (
         <div className="success-message">
           <p className="success-message-text">
-            Votre réservation est en cours de traitement.<br />Attendez notre confirmation.
+            Votre réservation est en cours de traitement.
+            <br />
+            Attendez notre confirmation.
           </p>
           <button className="ok-button" onClick={handleDismissSuccess}>
             OK

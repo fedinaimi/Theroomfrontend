@@ -15,6 +15,12 @@ function ScenarioDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
+  const constructURL = (path) => {
+    if (!path) return "";
+    return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+  };
+
   // Success percentage for the chapter
   const [successPercentage, setSuccessPercentage] = useState(0);
 
@@ -61,12 +67,14 @@ function ScenarioDetails() {
     return 'premium';
   };
 
+  const imageURL = chapter.image ? constructURL(chapter.image) : "/placeholder.jpg";
+
   return (
     <div className="cannibal-container_big">
       <h1 className="cannibal-title">{chapter.name || "Unknown Chapter"}</h1>
       <div className="escape-room">
         <img
-          src={chapter.image || "/placeholder.jpg"}
+          src={imageURL || "/placeholder.jpg"}
           alt={chapter.name || "Chapter Image"}
           className="img"
         />
@@ -84,10 +92,26 @@ function ScenarioDetails() {
               <FontAwesomeIcon icon={faClock} className="logo" />
               <strong>Time:</strong> {chapter.time || "Not specified"} mins
             </li>
-            <li>
-              <FontAwesomeIcon icon={faMapMarkerAlt} className="logo" />
-              <strong>Location:</strong> {chapter.place || "Not specified"}
-            </li>
+<li>
+  <FontAwesomeIcon icon={faMapMarkerAlt} className="logo" />
+  <strong>Location:</strong>{" "}
+  {chapter.place ? (
+    <a
+      href={
+        chapter.place
+      }
+      className="location-link"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      cliquez ici
+    </a>
+  ) : (
+    "Not specified"
+  )}
+</li>
+
+
             {chapter.description && (
               <li>
                 <FontAwesomeIcon icon={faBook} className="logo" />

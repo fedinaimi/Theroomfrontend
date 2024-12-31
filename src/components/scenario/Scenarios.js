@@ -8,7 +8,11 @@ function Scenarios() {
   const navigate = useNavigate();
   const [scenarios, setScenarios] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
-
+  const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://192.168.1.43:5000';
+  const constructURL = (path) => {
+    if (!path) return "";
+    return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+  };
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 992);
     window.addEventListener("resize", handleResize);
@@ -43,7 +47,7 @@ function Scenarios() {
               loop
               muted
               playsInline
-              src={scenario.video}
+             src={constructURL(scenario.video)}
             >
               Your browser does not support the video tag.
             </video>
@@ -75,7 +79,8 @@ function Scenarios() {
         {scenarios.map((scenario) => (
           <div className="scenario-card" key={scenario._id}>
             <div className="scenario-image-wrapper">
-              <img src={scenario.image} alt={scenario.name} />
+            
+              <img src={constructURL(scenario.image)} alt={scenario.name} />
             </div>
             <div className="scenario-info">
               <div className="header-with-badge">
