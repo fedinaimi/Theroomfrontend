@@ -1,0 +1,190 @@
+/* Entire Section */
+.price-section {
+  width: 100%;
+  padding: 3rem 2rem;
+  font-family: "Bunya Personal", sans-serif; /* Or your theme font */
+  background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.9),
+      rgba(0, 0, 0, 0.7)
+    ),
+    url("../../assets/background.png"); /* Or your own background */
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Section Title */
+.price-section-title {
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #f26422;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Cards Container */
+.price-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+/* Price Card */
+.price-card {
+  background-color: #222;
+  border: 1px solid #f26422;
+  border-radius: 15px;
+  width: 280px;
+  padding: 2rem;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+
+  /* Add a subtle gradient overlay */
+  background: 
+    linear-gradient(
+      rgba(0, 0, 0, 0) 30%, 
+      rgba(0, 0, 0, 0.3) 100%
+    ),
+    #222; /* fallback color */
+
+  /* 
+    1) fadeInUp: smoothly appears from below
+    2) fluentFloat: wave-like gentle floating
+  */
+  animation: 
+    fadeInUp 0.8s ease forwards,
+    fluentFloat 4s ease-in-out 0.8s infinite;
+  opacity: 0;
+  transform: translateY(40px) scale(0.9);
+
+  /* Hover: subtle scale & deeper shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.price-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7);
+}
+
+/* Price Card Title (e.g., "2 Joueurs") */
+.price-card-title {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: #f26422;
+  text-transform: uppercase;
+}
+
+/* Price Amount (e.g., "40 TND") */
+.price-card-amount {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #f26422;
+}
+
+/* "Par personne" or extra text */
+.price-card-per {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+/* Keyframe: Fade & Slide In */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Keyframe: Fluent, Wave-Like Float */
+@keyframes fluentFloat {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-3px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  75% {
+    transform: translateY(-3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* BEST VALUE STYLING */
+.best-value {
+  border: 2px solid #28a745; /* more noticeable border for best value */
+  box-shadow: 0 5px 25px rgba(0, 128, 0, 0.4);
+  position: relative;
+}
+
+/* The small badge in the corner */
+.best-value-badge {
+  position: absolute;
+  top: 10px;
+  right: -30px;
+  background-color: #28a745;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 8px rgba(0, 128, 0, 0.4);
+  border-radius: 4px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .price-section-title {
+    font-size: 2rem;
+  }
+  .price-card {
+    width: 220px;
+  }
+  .price-card-title {
+    font-size: 1.2rem;
+  }
+  .price-card-amount {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .price-section {
+    padding: 2rem 1rem;
+  }
+  .price-section-title {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .price-card {
+    width: 80%;
+  }
+  .price-card-title {
+    font-size: 1.1rem;
+  }
+  .price-card-amount {
+    font-size: 1.5rem;
+  }
+  .best-value-badge {
+    font-size: 0.7rem;
+    top: 8px;
+    right: -25px;
+  }
+}

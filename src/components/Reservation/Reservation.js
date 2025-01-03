@@ -28,7 +28,7 @@ const Reservation = () => {
   });
   const [errors, setErrors] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
-  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.130:5000";
 
   const constructURL = (path) => {
     if (!path) return "";
@@ -277,7 +277,9 @@ const Reservation = () => {
   };
 
   return (
+    
     <div className="reservation-container">
+      
       <h1>Réservation</h1>
       <div className="calendar-navigation">
         <button className="nav-button" onClick={() => handleDateChange("prev")}>
@@ -310,15 +312,7 @@ const Reservation = () => {
               {chapter.maxPlayerNumber || "N/A"}
             </p>
 
-            <div className="price-badge-container">
-              <span
-                className={`price-badge ${getPriceCategory(chapter.price)}`}
-                data-tooltip={`Prix par personne: ${chapter.price} TND`}
-              >
-                {chapter.price} TND
-              </span>
-              <span className="price-label"> par personne</span>
-            </div>
+           
 
             <div className="times">
               {timeSlots[chapter._id]?.length > 0 ? (
@@ -495,6 +489,7 @@ const Reservation = () => {
           <span>Réservé</span>
         </div>
       </div>
+      
     </div>
   );
 };

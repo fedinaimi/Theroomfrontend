@@ -513,3 +513,52 @@
   display: block;
   border-radius: 0 0 10px 10px;
 }
+.chapter-cover-img {
+  width: 5%;
+  height: auto;
+  max-height: 50vh;
+  object-fit: cover;
+  display: block;
+  border-radius: 0 0 10px 10px;
+}
+/* Popup Styling (existing styles) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center; /* you can remove align-items if you want the popup pinned at top on mobile */
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 
+   Limit the height of the popup so we can scroll on smaller screens
+   and prevent it from being hidden by the navbar or going off-screen.
+*/
+.popup {
+  background-color: #222;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 80vh; /* limit to 80% of the viewport height */
+  overflow-y: auto; /* enable vertical scrolling if content exceeds max-height */
+  text-align: center;
+}
+
+/* Media query for extra small screens */
+@media (max-width: 480px) {
+  .popup {
+    /* Adjust padding & radius if you want to maximize available space */
+    padding: 1rem;
+    border-radius: 8px;
+
+    /* If you want it even taller, consider 90vh */
+    max-height: 85vh;
+  }
+}

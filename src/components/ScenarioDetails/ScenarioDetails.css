@@ -266,3 +266,20 @@
   text-decoration: none;
   color: #f2f2f2; /* or another hover color */
 }
+/* Single-line price container */
+.price-line {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* center horizontally */
+  gap: 0.8rem;            /* spacing between elements */
+  margin-top: 1.2rem;     /* space above the row */
+  font-size: 0.9rem;      /* smaller text */
+  color: #ccc;            /* subtle text color */
+}
+
+/* Vertical bar separator */
+.separator {
+  color: #f26422; /* accent color for the separator */
+  font-weight: bold;
+}

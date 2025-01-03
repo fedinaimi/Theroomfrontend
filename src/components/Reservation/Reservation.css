@@ -544,3 +544,91 @@
   display: block;
   border-radius: 0 0 10px 10px;
 }
+/* Popup Styling (existing styles) */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center; /* you can remove align-items if you want the popup pinned at top on mobile */
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* 
+   Limit the height of the popup so we can scroll on smaller screens
+   and prevent it from being hidden by the navbar or going off-screen.
+*/
+.popup {
+  background-color: #222;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 80vh; /* limit to 80% of the viewport height */
+  overflow-y: auto; /* enable vertical scrolling if content exceeds max-height */
+  text-align: center;
+}
+
+/* Media query for extra small screens */
+@media (max-width: 480px) {
+  .popup {
+    /* Adjust padding & radius if you want to maximize available space */
+    padding: 1rem;
+    border-radius: 8px;
+
+    /* If you want it even taller, consider 90vh */
+    max-height: 85vh;
+  }
+}
+/* Price Table Container */
+.price-table-container {
+  margin-top: 2rem; /* Give space above */
+  color: #fff;      /* Match your white text color */
+  text-align: center;
+}
+
+/* Price Table Title */
+.price-table-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 8px rgba(242, 100, 34, 0.7); /* Subtle glow like your other headings */
+}
+
+/* Table Styling */
+.price-table {
+  margin: 0 auto;       /* Center the table */
+  border-collapse: collapse;
+  min-width: 280px;     /* A little min-width so the table doesn't get too narrow */
+  max-width: 400px;     /* Adjust if you want a specific max size */
+  font-size: 1rem;
+}
+
+/* Table header cells */
+.price-table th {
+  background-color: #f26422; /* Your orange color */
+  color: white;
+  padding: 0.75rem;
+  border: 1px solid #f26422;
+}
+
+/* Table body cells */
+.price-table td {
+  border: 1px solid #f26422;
+  padding: 0.75rem;
+}
+
+/* Optional: Zebra-striping for table rows */
+.price-table tbody tr:nth-child(even) {
+  background-color: #333;  /* Dark background for even rows */
+}
+@media (max-width: 480px) {
+  .price-table {
+    font-size: 0.9rem;
+    min-width: auto;  /* Let it shrink if needed */
+  }
+}

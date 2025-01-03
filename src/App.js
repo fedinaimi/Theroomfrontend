@@ -12,6 +12,7 @@ import ScenarioDetails from "./components/ScenarioDetails/ScenarioDetails";
 import ReservationDetails from "./components/ReservationDetails/ReservationDetails";
 import SplashScreen from "./components/Splash/SplashScreen";
 import "./App.css";
+import Price from "./components/PackPricing/Price";
 
 const ScrollToHash = () => {
   const location = useLocation();
@@ -88,6 +89,9 @@ function App() {
                       <div id="teambuilding">
                         <TeamBuilding />
                       </div>
+                      <div id="pack-pricing">
+                      <Price />
+                    </div>
                       <div id="reservation">
                         <Reservation />
                       </div>
@@ -111,9 +115,14 @@ function App() {
                     <div id="teambuilding">
                       <TeamBuilding />
                     </div>
+                    <div id="pack-pricing">
+                      <Price />
+                    </div>
                     <div id="reservation">
                       <Reservation />
                     </div>
+
+                  
                     <div id="apropos">
                       <About />
                     </div>

@@ -47,6 +47,9 @@ const Navbar = () => {
                 <a href="#teambuilding">Teambuilding</a>
               </li>
               <li>
+                <a href="#pack-pricing">Nos Tarifs</a>
+              </li>
+              <li>
                 <a href="#apropos">À propos</a>
               </li>
               <li>
@@ -97,10 +100,14 @@ const Navbar = () => {
               <span>Scénarios</span>
             </Link>
           </li>
-      
           <li>
             <Link to="/#teambuilding" onClick={closeSidebar}>
               <span>Teambuilding</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/#pack-pricing" onClick={closeSidebar}>
+              <span>Nos Tarifs</span>
             </Link>
           </li>
           <li>

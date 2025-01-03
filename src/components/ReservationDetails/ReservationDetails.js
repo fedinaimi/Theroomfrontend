@@ -33,9 +33,12 @@ function ReservationDetails() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://192.168.1.43:5000';
-  const imageURL = `${baseURL.replace(/\/+$/, '')}/${chapter.image.replace(/^\/+/, '')}`;
-  const videoURL = `${baseURL.replace(/\/+$/, '')}/${chapter.video.replace(/^\/+/, '')}`;
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.130:5000";
+
+  const constructURL = (path) => {
+    if (!path) return "";
+    return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
+  };
   // More robust email pattern:
   const emailRegex = /^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/i;
 
@@ -307,7 +310,7 @@ function ReservationDetails() {
       <div className="reservation-card">
         {/* Existing chapter image (you could remove this if the new top cover is sufficient) */}
         <img
-          src={imageURL || "/placeholder.jpg"}
+          src={constructURL(chapter.image)  || "/placeholder.jpg"}
           alt={chapter?.name || "Chapter"}
           className="reservation-image"
         />
@@ -350,14 +353,15 @@ function ReservationDetails() {
           
           <div className="popup">
             <h2 className="popup-title">
-              Réserver pour {formatTime(selectedTimeSlot?.startTime) || "N/A"}
-            </h2>
-            <div 
-        className="chapter-cover" 
-        style={{
-          backgroundImage: `url(${chapter?.image || '/placeholder.jpg'})`,
-        }}
-      ></div>
+              Réservation pour {chapter?.name} à{" "}
+              {formatTime(selectedTimeSlot?.startTime)}
+            </h2>            
+            <div
+  className="chapter-cover"
+  style={{
+    backgroundImage: `url(${constructURL(chapter.image) || "/placeholder.jpg"})`,
+  }}
+></div>
             <form onSubmit={handleSubmit} className="popup-form">
               {/* Name Field */}
               <label>Nom:</label>

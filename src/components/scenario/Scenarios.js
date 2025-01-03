@@ -8,7 +8,7 @@ function Scenarios() {
   const navigate = useNavigate();
   const [scenarios, setScenarios] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 992);
-  const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://192.168.1.43:5000';
+  const baseURL = process.env.REACT_APP_API_BASE_URL || 'http://192.168.1.130:5000';
   const constructURL = (path) => {
     if (!path) return "";
     return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
