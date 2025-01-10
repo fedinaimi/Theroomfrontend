@@ -15,7 +15,7 @@ function ScenarioDetails() {
   const [error, setError] = useState(null);
   const [successPercentage, setSuccessPercentage] = useState(0);
 
-  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.130:5000";
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
   const constructURL = (path) => {
     if (!path) return "";
     return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
@@ -26,7 +26,7 @@ function ScenarioDetails() {
       try {
         const fetchedChapter = await getChapterById(id);
         setChapter(fetchedChapter);
-        setSuccessPercentage(fetchedChapter.percentageOfSuccess || 75);
+        setSuccessPercentage(fetchedChapter.percentageOfSuccess || 0);
       } catch (err) {
         console.error("Error fetching chapter:", err);
         setError("Failed to load chapter details.");

@@ -33,7 +33,7 @@ function ReservationDetails() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.130:5000";
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
 
   const constructURL = (path) => {
     if (!path) return "";
