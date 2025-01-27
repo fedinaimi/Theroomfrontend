@@ -9,6 +9,7 @@ import "./ReservationDetails.css";
 import { FaPhoneAlt } from "react-icons/fa"; // Import phone icon
 import ButtonLoader from "../button/ButtonLoader";
 import countryCodes from "../../data/countryCodes.json";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 function ReservationDetails() {
   const { id } = useParams();
@@ -55,31 +56,35 @@ function ReservationDetails() {
   // Form validation
   const validateForm = () => {
     const newErrors = {};
-
+  
     // Name
     if (!formData.name.trim()) {
       newErrors.name = "Le nom est requis.";
     }
-
+  
     // Email
     if (!formData.email.trim()) {
       newErrors.email = "L'adresse email est requise.";
     } else if (!emailRegex.test(formData.email)) {
       newErrors.email = "Adresse email invalide.";
     }
-
+  
     // Phone
-    if (formData.phone.length !== 8) {
-      newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
-    } else if (!/^[9254]/.test(formData.phone)) {
-      newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
+    const phoneNumber = parsePhoneNumberFromString(
+      `${formData.countryCode}${formData.phone}`
+    );
+  
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Le numéro de téléphone est requis.";
+    } else if (!phoneNumber?.isValid()) {
+      newErrors.phone = "Numéro de téléphone invalide pour le pays sélectionné.";
     }
-
+  
     // Number of players
     if (chapter) {
       const { minPlayerNumber, maxPlayerNumber } = chapter;
       const playerCount = Number(formData.people);
-
+  
       if (
         isNaN(playerCount) ||
         playerCount < minPlayerNumber ||
@@ -88,9 +93,10 @@ function ReservationDetails() {
         newErrors.people = `Le nombre de joueurs doit être entre ${minPlayerNumber} et ${maxPlayerNumber}.`;
       }
     }
-
+  
     return newErrors;
   };
+  
 
   // Fetch chapter details only once when the component mounts
   useEffect(() => {

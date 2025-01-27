@@ -8,6 +8,7 @@ import "./Reservation.css";
 import { FaPhoneAlt } from "react-icons/fa"; // Import phone icon
 import ButtonLoader from "../button/ButtonLoader";
 import countryCodes from "../../data/countryCodes.json";
+import parsePhoneNumberFromString from "libphonenumber-js";
 
 const Reservation = () => {
   const [chapters, setChapters] = useState([]);
@@ -163,6 +164,9 @@ const Reservation = () => {
   // Form validation
   const validateForm = () => {
     const newErrors = {};
+    const phoneNumber = parsePhoneNumberFromString(
+      `${formData.countryCode}${formData.phone}`
+    );
 
     if (!formData.name.trim()) {
       newErrors.name = "Le nom est requis.";
@@ -174,10 +178,10 @@ const Reservation = () => {
       newErrors.email = "Adresse email invalide.";
     }
 
-    if (formData.phone.length !== 8) {
-      newErrors.phone = "Le numéro de téléphone doit contenir exactement 8 chiffres.";
-    } else if (!/^[9254]/.test(formData.phone)) {
-      newErrors.phone = "Le premier chiffre doit être 9, 2, 5 ou 4.";
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Le numéro de téléphone est requis.";
+    } else if (!phoneNumber?.isValid()) {
+      newErrors.phone = "Numéro de téléphone invalide pour le pays sélectionné.";
     }
 
     if (selectedChapter) {
@@ -197,6 +201,7 @@ const Reservation = () => {
 
     return newErrors;
   };
+
 
   // Handle form submission
   const handleSubmit = async (e) => {
@@ -389,29 +394,29 @@ const Reservation = () => {
               {errors.email && <p className="error-message">{errors.email}</p>}
 
               <label>Téléphone:</label>
-              <div className="phone-input">
-                <select
-                  name="countryCode"
-                  value={formData.countryCode}
-                  onChange={handleFormChange}
-                >
-                  {countryCodes.map((country) => (
-                    <option key={country.code} value={country.dialCode}>
-                      {country.flag} {country.name} ({country.dialCode})
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleFormChange}
-                  placeholder="Entrez votre numéro de téléphone"
-                  className={errors.phone ? "input-error" : ""}
-                  required
-                />
-              </div>
-              {errors.phone && <p className="error-message">{errors.phone}</p>}
+<div className="phone-input">
+  <select
+    name="countryCode"
+    value={formData.countryCode}
+    onChange={handleFormChange}
+  >
+    {countryCodes.map((country) => (
+      <option key={country.code} value={country.dialCode}>
+        {country.flag} {country.name} ({country.dialCode})
+      </option>
+    ))}
+  </select>
+  <input
+    type="tel"
+    name="phone"
+    value={formData.phone}
+    onChange={handleFormChange}
+    placeholder="Entrez votre numéro de téléphone"
+    className={errors.phone ? "input-error" : ""}
+    required
+  />
+</div>
+{errors.phone && <p className="error-message">{errors.phone}</p>}
 
               <label>Nombre de personnes:</label>
               <input
