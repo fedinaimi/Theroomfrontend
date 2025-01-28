@@ -11,8 +11,8 @@ import Footer from "./components/Footer/Footer";
 import ScenarioDetails from "./components/ScenarioDetails/ScenarioDetails";
 import ReservationDetails from "./components/ReservationDetails/ReservationDetails";
 import SplashScreen from "./components/Splash/SplashScreen";
-import "./App.css";
 import Price from "./components/PackPricing/Price";
+import "./App.css";
 
 const ScrollToHash = () => {
   const location = useLocation();
@@ -42,14 +42,26 @@ function App() {
     setShowSplash(false);
   };
 
+  // Lock/unlock scrolling
+  useEffect(() => {
+    if (isMobile && showHero) {
+      // Lock scrolling when Hero is displayed on mobile
+      document.body.style.overflow = "hidden";
+    } else {
+      // Unlock scrolling
+      document.body.style.overflow = "auto";
+    }
+  }, [isMobile, showHero]);
+
   // Handle resizing
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 992);
     window.addEventListener("resize", handleResize);
 
+    // Fallback to hide splash if video fails or is too long
     const timeout = setTimeout(() => {
       setShowSplash(false);
-    }, 5000); // Fallback timeout in case video fails
+    }, 5000);
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -58,8 +70,10 @@ function App() {
   }, []);
 
   const handleHeroNavigation = () => {
+    // Hide Hero
     setShowHero(false);
 
+    // Smooth scroll to Scenarios
     const section = document.getElementById("scenarios-section");
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
@@ -72,7 +86,10 @@ function App() {
         <SplashScreen onFinish={handleSplashFinish} />
       ) : (
         <>
-          <Navbar />
+          <Navbar 
+            // Pass a callback so Navbar can also hide the Hero when user opens the sidebar
+            onOpenSidebar={() => setShowHero(false)}
+          />
           <ScrollToHash />
           <Routes>
             <Route
@@ -90,8 +107,8 @@ function App() {
                         <TeamBuilding />
                       </div>
                       <div id="pack-pricing">
-                      <Price />
-                    </div>
+                        <Price />
+                      </div>
                       <div id="reservation">
                         <Reservation />
                       </div>
@@ -107,7 +124,7 @@ function App() {
                 ) : (
                   <>
                     <div id="accueil">
-                      <Hero />
+                      <Hero onArrowClick={handleHeroNavigation} />
                     </div>
                     <div id="scenarios-section">
                       <Scenarios />
@@ -121,8 +138,6 @@ function App() {
                     <div id="reservation">
                       <Reservation />
                     </div>
-
-                  
                     <div id="apropos">
                       <About />
                     </div>

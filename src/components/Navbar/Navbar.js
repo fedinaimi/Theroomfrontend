@@ -3,12 +3,17 @@ import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../../assets/logoEscapeF.png";
 
-const Navbar = () => {
+const Navbar = ({ onOpenSidebar }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+
+    // If you want to forcibly hide Hero whenever the sidebar is opened
+    if (!isSidebarOpen && onOpenSidebar) {
+      onOpenSidebar();  // calls setShowHero(false) in App.js
+    }
   };
 
   const closeSidebar = () => {
@@ -76,7 +81,6 @@ const Navbar = () => {
           )}
         </ul>
         <div className="buttons">
-          {/* Example CTA button */}
           <Link to="/#reservation">
             <button className="reserve-btn">Réserver Maintenant</button>
           </Link>
