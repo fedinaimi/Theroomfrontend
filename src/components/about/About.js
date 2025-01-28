@@ -27,17 +27,14 @@ function About() {
           À propos de <span className="argent-text">THE ROOM</span>
         </h2>
         <p>
-          Bienvenue à The Room! Nous sommes situés au cœur de Menzah 7, où nous
-          proposons des expériences uniques sous forme d'escape rooms. Notre
-          équipe est dédiée à offrir un environnement excitant et immersif où
-          vous pouvez résoudre des énigmes et vous amuser avec vos amis ou votre
-          famille.
+       Bienvenue à The Room, votre destination d’aventure immersive à Menzah 7 !
         </p>
         <p>
-          Notre établissement a été conçu pour offrir un mélange d'aventure, de
-          défi et de divertissement. Nous sommes fiers de nos salles
-          thématiques, parfaites pour des activités de team building, des fêtes
-          d'anniversaire ou simplement une sortie amusante.
+        Plongez au cœur de nos escape rooms uniques, conçues pour offrir une expérience inoubliable. Que ce soit entre amis, en famille ou avec vos collègues, notre équipe s’engage à créer un environnement captivant où réflexion, coopération et amusement se rencontrent.
+
+Chez The Room, chaque salle thématique est soigneusement imaginée pour vous transporter dans un univers fascinant. Que ce soit pour un team building, une fête d’anniversaire ou simplement une sortie originale, nous promettons des moments de défi et de divertissement qui resteront gravés dans vos mémoires.
+
+Prêts à relever le défi ? Rejoignez-nous et découvrez une nouvelle façon de vous amuser !
         </p>
       </div>
       <div className="about-map animate">

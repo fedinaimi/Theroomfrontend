@@ -10,17 +10,31 @@ function Hero({ onArrowClick }) {
       <div className="floating-logo">
         <img src={logo} alt="The Room Escape Game" />
 
+        {/* Animated text block */}
+        <p className="hero-text">
+          Vivez une aventure immersive où chaque seconde compte ! Enfermés dans un décor captivant,
+          résolvez des énigmes, trouvez des indices et travaillez en équipe pour vous échapper avant
+          la fin du temps imparti. Prêts à relever le défi ?
+          <br />
+          {/* Make this text clickable */}
+          <span 
+            className="hero-highlight clickable-text" 
+            onClick={onArrowClick}
+          >
+            Alors cliquez ici
+          </span>
+        </p>
+
         {/* Scroll Arrows */}
-        <div className="scroll-arrow" onClick={onArrowClick} aria-label="Scroll Down">
+        <div 
+          className="scroll-arrow" 
+          onClick={onArrowClick} 
+          aria-label="Scroll Down"
+        >
           <span className="arrow"></span>
           <span className="arrow"></span>
           <span className="arrow"></span>
         </div>
-
-        {/* "Cliquer ici" Button */}
-        <button className="click-here-button" onClick={onArrowClick} aria-label="Click Here">
-          Cliquer ici
-        </button>
       </div>
     </div>
   );

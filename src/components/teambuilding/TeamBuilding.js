@@ -24,13 +24,14 @@ function TeamBuilding() {
     <section className="team-building-section">
       <div className="team-building-content animate">
         <h2>
-          <span className="argent-text">Team Building</span> chez The Room
+          <span className="argent-text">Team Building chez The Room </span> : L’expérience qui renforce vos équipes !
         </h2>
         <p>
-          Renforcez la cohésion de votre équipe avec une expérience immersive.
-          Nos escape rooms favorisent la communication, la collaboration et la
-          résolution de problèmes dans un cadre ludique et stimulant. Un moment
-          inoubliable pour développer l'esprit d'équipe !
+        Offrez à votre équipe une aventure immersive qui stimule la collaboration et la communication. <br />
+
+C’est bien plus qu’un simple jeu : c’est une opportunité unique de renforcer la cohésion d’équipe, de créer des souvenirs mémorables et de développer un esprit d’entraide. <br />
+
+Relevez le défi ensemble et découvrez une nouvelle façon de souder vos liens professionnels !
         </p>
       </div>
       <div className="team-building-image animate">

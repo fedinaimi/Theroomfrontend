@@ -1,17 +1,15 @@
-/* src/components/Hero/Hero.css */
-
 /* Hero section */
 .hero {
-  position: relative; /* Ensures other elements like cards stack properly */
-  min-height: 100vh; /* Full height of the viewport */
+  position: relative;
+  min-height: 100vh;
   padding: 300px 20px;
   color: white;
   text-align: center;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)),
     url("../../assets/background.png");
-  background-size: cover; /* Ensures the background covers the whole section */
-  background-position: center; /* Centers the background image */
-  background-attachment: fixed; /* Makes the background image fixed during scrolling */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 /* Floating logo animation */
@@ -24,14 +22,13 @@
 }
 
 .floating-logo img {
-  width: 600px; /* Adjust size as needed */
-  margin-bottom: 150px; /* Adds spacing between the logo and arrows */
+  width: 600px;
+  margin-bottom: 30px;
 }
 
 /* Floating animation */
 @keyframes float {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(-10px);
   }
   50% {
@@ -39,16 +36,59 @@
   }
 }
 
-/* Scroll arrows container */
+/* Hero text block */
+.hero-text {
+  max-width: 700px;
+  line-height: 1.5;
+  font-size: 1.2rem;
+  margin-bottom: 50px;
+  opacity: 0;            
+  animation: fadeInUp 1.5s forwards;
+  animation-delay: 0.5s;
+}
+
+.hero-highlight {
+  color: #f26422;
+  font-weight: bold;
+}
+
+/* Make the highlight text look clickable */
+.clickable-text {
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 1.1rem; /* Slightly larger for better tapability */
+  touch-action: manipulation; /* Improves touch interaction */
+  user-select: none; /* Prevents accidental text selection */
+}
+
+@media (max-width: 480px) {
+  .clickable-text {
+    font-size: 1rem; /* Adjust size for smaller screens */
+  }
+}
+
+
+/* Fade-in-up animation */
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Scroll arrows */
 .scroll-arrow {
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 20px; /* Space between arrows and "Cliquer ici" */
+  margin-bottom: 20px;
 }
 
-/* Individual arrow styling */
 .scroll-arrow .arrow {
   width: 15px;
   height: 15px;
@@ -59,7 +99,6 @@
   animation: scroll 1.5s infinite;
 }
 
-/* Staggered animation delays for arrows */
 .scroll-arrow .arrow:nth-child(1) {
   animation-delay: 0s;
 }
@@ -72,7 +111,6 @@
   animation-delay: 0.4s;
 }
 
-/* Scroll animation */
 @keyframes scroll {
   0% {
     opacity: 0;
@@ -80,7 +118,7 @@
   }
   50% {
     opacity: 1;
-    transform: rotate(45deg) translate(0px, 0px);
+    transform: rotate(45deg) translate(0, 0);
   }
   100% {
     opacity: 0;
@@ -88,68 +126,65 @@
   }
 }
 
-/* "Cliquer ici" Button Styling */
-.click-here-button {
-  display: none; /* Hidden by default */
-  background-color: #f26422;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  font-size: 1rem;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-  opacity: 0.8;
-  animation: float-button 3s ease-in-out infinite;
-}
-
-.click-here-button:hover {
-  background-color: #d95319;
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-/* Floating animation for the button */
-@keyframes float-button {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Show "Cliquer ici" button only on mobile devices */
+/* Responsive adjustments */
 @media (max-width: 767px) {
-  .click-here-button {
-    display: inline-block;
-    margin-top: 10px;
+  .floating-logo img {
+    width: 300px;
+    margin-bottom: 20px;
   }
 
-  .floating-logo img {
-    width: 300px; /* Adjust logo size for mobile */
-    margin-bottom: 100px; /* Adjust spacing for mobile */
+  .hero-text {
+    font-size: 1rem;
+    margin-bottom: 30px;
+    padding: 0 20px;
   }
 
   .scroll-arrow {
-    margin-bottom: 10px; /* Adjust spacing for mobile */
+    margin-bottom: 10px;
   }
 }
 
-/* Adjust padding for smaller screens */
 @media (max-width: 480px) {
   .hero {
     padding: 200px 10px;
   }
 
-  .click-here-button {
-    padding: 10px 20px;
-    font-size: 0.9rem;
-  }
-
   .scroll-arrow .arrow {
     width: 12px;
     height: 12px;
+  }
+}
+.clickable-text {
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 1.1rem; /* Slightly larger for better tapability */
+  touch-action: manipulation; /* Improves touch interaction */
+  user-select: none; /* Prevents accidental text selection */
+}
+
+@media (max-width: 480px) {
+  .clickable-text {
+    font-size: 1rem; /* Adjust size for smaller screens */
+  }
+}
+.clickable-text:active {
+  color: #e0501d; /* Slightly darker orange for feedback */
+  transform: scale(0.95); /* A slight press effect */
+}
+@media (max-width: 767px) {
+  .clickable-text {
+    display: inline; /* or block if you prefer */
+  }
+}
+
+/* Hide on desktop (min-width: 768px) */
+@media (min-width: 768px) {
+  .clickable-text {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  .clickable-text {
+    display: none;
   }
 }

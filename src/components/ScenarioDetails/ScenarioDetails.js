@@ -1,11 +1,10 @@
-// src/pages/ScenarioDetails.js
-
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./ScenarioDetails.css"; // same file containing .cannibal-container_big, etc.
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMapMarkerAlt, faClock, faUsers, faBook } from "@fortawesome/free-solid-svg-icons";
 import { getChapterById } from "../../services/chapterService";
+import { getAllPrices } from "../../services/priceService"; // Import the price service
+import "./ScenarioDetails.css";
 
 function ScenarioDetails() {
   const { id } = useParams();
@@ -14,6 +13,7 @@ function ScenarioDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successPercentage, setSuccessPercentage] = useState(0);
+  const [prices, setPrices] = useState([]); // State to store prices
 
   const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
   const constructURL = (path) => {
@@ -22,19 +22,23 @@ function ScenarioDetails() {
   };
 
   useEffect(() => {
-    async function fetchChapter() {
+    async function fetchData() {
       try {
-        const fetchedChapter = await getChapterById(id);
+        const [fetchedChapter, fetchedPrices] = await Promise.all([
+          getChapterById(id),
+          getAllPrices()
+        ]);
         setChapter(fetchedChapter);
         setSuccessPercentage(fetchedChapter.percentageOfSuccess || 0);
+        setPrices(fetchedPrices); // Set prices from API
       } catch (err) {
-        console.error("Error fetching chapter:", err);
+        console.error("Error fetching data:", err);
         setError("Failed to load chapter details.");
       } finally {
         setLoading(false);
       }
     }
-    fetchChapter();
+    fetchData();
   }, [id]);
 
   if (loading) {
@@ -65,14 +69,8 @@ function ScenarioDetails() {
     <div className="cannibal-container_big">
       <h1 className="cannibal-title">{chapter.name || "Unknown Chapter"}</h1>
       <div className="escape-room">
-        {/* Chapter Image */}
-        <img
-          src={imageURL}
-          alt={chapter.name || "Chapter Image"}
-          className="img"
-        />
+        <img src={imageURL} alt={chapter.name || "Chapter Image"} className="img" />
 
-        {/* Details */}
         <div className="details">
           <h2>Details</h2>
           <ul className="info-list">
@@ -113,22 +111,21 @@ function ScenarioDetails() {
             )}
           </ul>
 
-          {/* Single-line static prices */}
+          {/* Dynamic Prices */}
           <div className="price-line">
-            <span>
-              2 Joueurs: <strong>40 TND</strong> par personne
-            </span>
-            <span className="separator">|</span>
-            <span>
-              3 Joueurs: <strong>35 TND</strong> par personne
-            </span>
-            <span className="separator">|</span>
-            <span>
-              4 Joueurs ou +: <strong>30 TND</strong> par personne
-            </span>
+            {prices.map((price) => {
+              const label = price.isAndAbove
+                ? `${price.playersCount} Joueurs ou +`
+                : `${price.playersCount} Joueurs`;
+              return (
+                <span key={price._id}>
+                  {label}: <strong>{price.pricePerPerson} TND</strong> par personne
+                  <span className="separator">|</span>
+                </span>
+              );
+            })}
           </div>
 
-          {/* Success Bar */}
           <div className="success-bar-container">
             <p className="success-text">
               <strong>Success Rate:</strong> {successPercentage}%
@@ -141,7 +138,6 @@ function ScenarioDetails() {
             </div>
           </div>
 
-          {/* Reserve Button */}
           <div className="button-container">
             <button
               className="reserve-button"
@@ -157,7 +153,6 @@ function ScenarioDetails() {
         </div>
       </div>
 
-      {/* Comment / Additional Info */}
       {chapter.comment && (
         <div className="textBottomcannibal">
           <p className="cannibal-description">{chapter.comment}</p>

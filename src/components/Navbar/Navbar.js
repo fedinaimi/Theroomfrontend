@@ -19,14 +19,14 @@ const Navbar = () => {
 
   return (
     <div>
-      {/* Hamburger Menu */}
+      {/* Hamburger Menu (mobile) */}
       <div className={`hamburger ${isSidebarOpen ? "open" : ""}`} onClick={toggleSidebar}>
         <div className="bar"></div>
         <div className="bar"></div>
         <div className="bar"></div>
       </div>
 
-      {/* Navbar for large screens */}
+      {/* Desktop Navbar */}
       <nav className="navbar">
         <div className="logo">
           <Link to="/">
@@ -42,7 +42,6 @@ const Navbar = () => {
               <li>
                 <a href="#scenarios-section">Scénarios</a>
               </li>
-              
               <li>
                 <a href="#teambuilding">Teambuilding</a>
               </li>
@@ -64,7 +63,6 @@ const Navbar = () => {
               <li>
                 <Link to="/#scenarios-section">Scénarios</Link>
               </li>
-            
               <li>
                 <Link to="/#teambuilding">Teambuilding</Link>
               </li>
@@ -78,16 +76,17 @@ const Navbar = () => {
           )}
         </ul>
         <div className="buttons">
+          {/* Example CTA button */}
           <Link to="/#reservation">
             <button className="reserve-btn">Réserver Maintenant</button>
           </Link>
         </div>
       </nav>
 
-     {/* Sidebar */}
-     <div className={`sidebar ${isSidebarOpen ? "active" : ""}`}>
+      {/* Sidebar (mobile) */}
+      <div className={`sidebar ${isSidebarOpen ? "active" : ""}`}>
         <button className="close-btn" onClick={closeSidebar}>
-          
+          ✕
         </button>
         <ul className="sidebar-links">
           <li>
@@ -130,4 +129,5 @@ const Navbar = () => {
     </div>
   );
 };
+
 export default Navbar;
