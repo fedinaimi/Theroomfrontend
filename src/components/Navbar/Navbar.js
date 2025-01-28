@@ -3,24 +3,31 @@ import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 import logo from "../../assets/logoEscapeF.png";
 
-const Navbar = ({ onOpenSidebar }) => {
+const Navbar = ({ onSidebarLinkClick }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Current route path
   const location = useLocation();
+  // True if user is exactly on "/"
+  const isHome = location.pathname === "/";
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-
-    // If you want to forcibly hide Hero whenever the sidebar is opened
-    if (!isSidebarOpen && onOpenSidebar) {
-      onOpenSidebar();  // calls setShowHero(false) in App.js
-    }
   };
 
   const closeSidebar = () => {
     setIsSidebarOpen(false);
   };
 
-  const isHome = location.pathname === "/";
+  /** Called when a sidebar link is clicked */
+  const handleSidebarLink = () => {
+    closeSidebar();
+
+    // Also hide the Hero if we are on mobile & it's still shown
+    if (onSidebarLinkClick) {
+      onSidebarLinkClick();
+    }
+  };
 
   return (
     <div>
@@ -38,48 +45,33 @@ const Navbar = ({ onOpenSidebar }) => {
             <img src={logo} alt="The Room Escape Game" />
           </Link>
         </div>
+
+        {/* Desktop links */}
         <ul className="nav-links">
-          {isHome ? (
-            <>
-              <li>
-                <a href="#accueil">Accueil</a>
-              </li>
-              <li>
-                <a href="#scenarios-section">Scénarios</a>
-              </li>
-              <li>
-                <a href="#teambuilding">Teambuilding</a>
-              </li>
-              <li>
-                <a href="#pack-pricing">Nos Tarifs</a>
-              </li>
-              <li>
-                <a href="#apropos">À propos</a>
-              </li>
-              <li>
-                <a href="#contact">Contact</a>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/#accueil">Accueil</Link>
-              </li>
-              <li>
-                <Link to="/#scenarios-section">Scénarios</Link>
-              </li>
-              <li>
-                <Link to="/#teambuilding">Teambuilding</Link>
-              </li>
-              <li>
-                <Link to="/#apropos">À propos</Link>
-              </li>
-              <li>
-                <Link to="/#contact">Contact</Link>
-              </li>
-            </>
+          {/** Only show "Accueil" if isHome is true */}
+          {isHome && (
+            <li>
+              <a href="#accueil">Accueil</a>
+            </li>
           )}
+          <li>
+            <a href="#scenarios-section">Scénarios</a>
+          </li>
+          <li>
+            <a href="#teambuilding">Teambuilding</a>
+          </li>
+          <li>
+            <a href="#pack-pricing">Nos Tarifs</a>
+          </li>
+          <li>
+            <a href="#apropos">À propos</a>
+          </li>
+          <li>
+            <a href="#contact">Contact</a>
+          </li>
         </ul>
+
+        {/* Example CTA button */}
         <div className="buttons">
           <Link to="/#reservation">
             <button className="reserve-btn">Réserver Maintenant</button>
@@ -93,38 +85,41 @@ const Navbar = ({ onOpenSidebar }) => {
           ✕
         </button>
         <ul className="sidebar-links">
+          {/* Only show Accueil in the sidebar if isHome == true */}
+          {!isHome && (
+            <li>
+              <Link to="/#accueil" onClick={handleSidebarLink}>
+                <span>Accueil</span>
+              </Link>
+            </li>
+          )}
           <li>
-            <Link to="/#accueil" onClick={closeSidebar}>
-              <span>Accueil</span>
-            </Link>
-          </li>
-          <li>
-            <Link to="/#scenarios-section" onClick={closeSidebar}>
+            <Link to="/#scenarios-section" onClick={handleSidebarLink}>
               <span>Scénarios</span>
             </Link>
           </li>
           <li>
-            <Link to="/#teambuilding" onClick={closeSidebar}>
+            <Link to="/#teambuilding" onClick={handleSidebarLink}>
               <span>Teambuilding</span>
             </Link>
           </li>
           <li>
-            <Link to="/#pack-pricing" onClick={closeSidebar}>
+            <Link to="/#pack-pricing" onClick={handleSidebarLink}>
               <span>Nos Tarifs</span>
             </Link>
           </li>
           <li>
-            <Link to="/#apropos" onClick={closeSidebar}>
+            <Link to="/#apropos" onClick={handleSidebarLink}>
               <span>À propos</span>
             </Link>
           </li>
           <li>
-            <Link to="/#contact" onClick={closeSidebar}>
+            <Link to="/#contact" onClick={handleSidebarLink}>
               <span>Contact</span>
             </Link>
           </li>
           <li>
-            <Link to="/#reservation" onClick={closeSidebar}>
+            <Link to="/#reservation" onClick={handleSidebarLink}>
               <span>Réservation</span>
             </Link>
           </li>
