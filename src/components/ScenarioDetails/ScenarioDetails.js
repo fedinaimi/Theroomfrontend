@@ -15,7 +15,7 @@ function ScenarioDetails() {
   const [successPercentage, setSuccessPercentage] = useState(0);
   const [prices, setPrices] = useState([]); // State to store prices
 
-  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://192.168.1.43:5000";
+  const baseURL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
   const constructURL = (path) => {
     if (!path) return "";
     return `${baseURL.replace(/\/+$/, "")}/${path.replace(/^\/+/, "")}`;
